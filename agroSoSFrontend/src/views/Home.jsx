@@ -1,11 +1,14 @@
 import React from 'react'
-import fakeData from '../data/sensor'
+import CreateUser from './CreateUser'
+import Login from './Login'
+import {SensorList} from '../components/SensorsList'
+import { User } from './User'
 
 function Home() {
-  console.log(fakeData)
-
   return (
-    <div>Home</div>
+    <div>
+      <Login/>
+    </div>
   )
 }
 

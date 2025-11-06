@@ -1,4 +1,4 @@
-const fakeData = [
+export const fakeData = [
   {
     "id": 1,
     "created_at": "2023-01-12T10:15:30.000Z",
@@ -89,4 +89,3 @@ const fakeData = [
   },
 ]
 
-export default fakeData
