@@ -6,26 +6,26 @@ import User from './views/User';
 import ModifyUser from './views/ModifyUser';
 import CreateUser from './views/CreateUser';
 import Admin from './views/Admin';
+import {Footer} from './components/Footer';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '@coreui/coreui/dist/css/coreui.min.css'
 
 function App() {
-
-
-  return (
-    <>
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='/admin/' element={<Admin/>}/>
-        <Route path='/user/:id' element={<User/>}/>
-        <Route path="/user/edit/:id" element={<ModifyUser />} />
-        <Route path='/login' element={<Login/>}/>
-        <Route path='/signIn' element={<CreateUser/>}/>
-      </Routes>
-    </BrowserRouter>
-    </>
-  );
+  return (<>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<Login/>}/>
+          <Route path='/*' element={<Login/>}/>
+          <Route path='/home' element={<Home/>}/>
+          <Route path='/admin/' element={<Admin/>}/>
+          <Route path='/user/:id' element={<User/>}/>
+          <Route path="/user/edit/:id" element={<ModifyUser/>}/>
+          <Route path='/login' element={<Login/>}/>
+          <Route path='/signIn' element={<CreateUser/>}/>
+        </Routes>
+      </BrowserRouter>
+    <Footer/>
+  </>);
 }
 
 export default App

@@ -11,15 +11,23 @@ import {
   CFormLabel,
   CRow,
 } from '@coreui/react'
-import {  useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
+import {UserContext} from '../context/UserContext'
 
 export const FormLogin = () => {
+  const {login} = useContext(UserContext)
 
-const navigate = useNavigate();
-const handleLogin = () => {
+  const fakeUser = {
+    id: 1,
+    username: 'juan',
+    email: 'juan@example.com',
+  }
+  const navigate = useNavigate();
+  const handleLogin = () => {
+    login(fakeUser)
     alert('Datos guardados correctamente')
     navigate(`/user/1`)
-}
+  }
 
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
@@ -32,11 +40,11 @@ const handleLogin = () => {
                 <CForm>
                   <div className="mb-3">
                     <CFormLabel htmlFor="email">Correo electrónico</CFormLabel>
-                    <CFormInput type="email" id="email" placeholder="usuario@correo.com" />
+                    <CFormInput type="email" id="email" placeholder="usuario@correo.com"/>
                   </div>
                   <div className="mb-3">
                     <CFormLabel htmlFor="password">Contraseña</CFormLabel>
-                    <CFormInput type="password" id="password" placeholder="********" />
+                    <CFormInput type="password" id="password" placeholder="********"/>
                   </div>
                   <div className="d-grid">
                     <CButton color="primary" onClick={handleLogin}>Entrar</CButton>
