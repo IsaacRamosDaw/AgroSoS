@@ -1,4 +1,4 @@
-package com.agroSoSProyect.agroSoSController;
+package com.agroSoSProyect;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
