@@ -1,12 +1,14 @@
-import React from 'react'
-import { FormLogin } from '../components/FormLogin'
+import React from "react";
+import { FormLogin } from "../components/FormLogin";
+import { Header } from "../components/Header";
 
 function Login() {
   return (
     <>
-      <FormLogin/>
+      <Header />
+      <FormLogin />
     </>
-  )
+  );
 }
 
-export default Login
+export default Login;
