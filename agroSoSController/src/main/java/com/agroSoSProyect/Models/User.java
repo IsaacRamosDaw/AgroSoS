@@ -1,13 +1,8 @@
 package com.agroSoSProyect.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Table;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
-
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "user")
 public class User {
@@ -15,9 +10,6 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
-  @Column(name = "user", nullable = false)
-  private Long user;
 
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
@@ -34,34 +26,25 @@ public class User {
   @Column(nullable = false)
   private String password;
 
-  // Constructor vacío obligatorio para JPA
   public User() {}
 
-  public User(Long id, Long user, LocalDateTime createdAt, LocalDateTime updatedAt, String name, String email, String password) {
-    this.id = id;
-    this.user = user;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
-    this.name = name;
-    this.email = email;
-    this.password = password;
-  }
-  public User(Long user, LocalDateTime createdAt, LocalDateTime updatedAt, String name, String email, String password) {
-    this.user = user;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
-    this.name = name;
-    this.email = email;
-    this.password = password;
-  }
-
-  public Long getUser() {
-    return user;
-  }
-
-  public void setUser(Long user) {
-    this.user = user;
-  }
+//  public User(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, String name, String email,
+//      String password) {
+//    this.id = id;
+//    this.createdAt = createdAt;
+//    this.updatedAt = updatedAt;
+//    this.name = name;
+//    this.email = email;
+//    this.password = password;
+//  }
+//
+//  public User(LocalDateTime createdAt, LocalDateTime updatedAt, String name, String email, String password) {
+//    this.createdAt = createdAt;
+//    this.updatedAt = updatedAt;
+//    this.name = name;
+//    this.email = email;
+//    this.password = password;
+//  }
 
   public Long getId() {
     return id;
@@ -109,5 +92,13 @@ public class User {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  @PreUpdate
+  protected void onUpdate() { this.updatedAt = LocalDateTime.now(); }
+  @PrePersist
+  protected void onCreate() {
+    this.createdAt = LocalDateTime.now();
+    this.updatedAt = LocalDateTime.now();
   }
 }
