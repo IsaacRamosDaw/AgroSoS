@@ -7,9 +7,15 @@ import {
 } from '@coreui/react'
 import { userContext } from '../context/UserContext'
 import { useAuth } from '../hook/auth/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 export function User() {
-  const { user: authUser } = useAuth();
+  const { user: authUser, logout } = useAuth();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    logout();
+    navigate(`/user/login`);
+  };
   const userData = authUser || user;
 
   //const { userLogged } = useContext(UserContext)
@@ -73,12 +79,18 @@ export function User() {
                 </div>
 
                 {/* Botón */}
-                <div className="text-center">
+                <div className="text-center d-flex justify-content-center gap-3">
 
                   <Link to={`/user/edit/${userData.id}`}>
                     <CButton color="primary" size="lg" className="px-5">
                       Modificar mis datos
                     </CButton>
+                  </Link>
+                  
+                  <Link to={`/login`}>
+                  <CButton color="primary" size="lg" className="px-5" onClick={handleLogout}>
+                    Cerrar sesión
+                  </CButton>
                   </Link>
                 </div>
 
