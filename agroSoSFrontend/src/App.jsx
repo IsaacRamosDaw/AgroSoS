@@ -1,14 +1,20 @@
-import {BrowserRouter, Route, Routes} from 'react-router-dom'
-import './App.css'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+
+// Views
 import Home from './views/Home';
 import Login from './views/Login';
 import User from './views/User';
 import ModifyUser from './views/ModifyUser';
 import CreateUser from './views/CreateUser';
 import Admin from './views/Admin';
-import {Footer} from './components/Footer';
+
+// Components
+import { Footer } from './components/Footer';
+
+// CSS
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '@coreui/coreui/dist/css/coreui.min.css'
+import './App.css'
 
 function App() {
   return (<>

@@ -26,7 +26,12 @@ public class User {
   @Column(nullable = false)
   private String password;
 
-  public User() {}
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private Role role;
+
+  public User() {
+  }
 
   public Long getId() {
     return id;
@@ -68,11 +73,23 @@ public class User {
     this.password = password;
   }
 
+  public Role getRole() {
+    return role;
+  }
+
+  public void setRole(Role role) {
+    this.role = role;
+  }
+
   @PreUpdate
-  protected void onUpdate() { this.updatedAt = LocalDateTime.now(); }
+  protected void onUpdate() {
+    this.updatedAt = LocalDateTime.now();
+  }
+
   @PrePersist
   protected void onCreate() {
     this.createdAt = LocalDateTime.now();
     this.updatedAt = LocalDateTime.now();
+    this.role = Role.USER;
   }
 }
