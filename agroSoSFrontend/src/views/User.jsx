@@ -5,7 +5,7 @@ import { Header } from '../components/Header'
 import {
   CCard, CCardBody, CCardTitle, CCardText, CButton, CRow, CCol, CAvatar, CContainer, CBadge,
 } from '@coreui/react'
-import { userContext } from '../context/UserContext'
+
 import { useAuth } from '../hook/auth/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
