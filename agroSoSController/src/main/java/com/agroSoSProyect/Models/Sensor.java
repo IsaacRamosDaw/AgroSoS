@@ -1,11 +1,7 @@
 package com.agroSoSProyect.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -31,18 +27,21 @@ public class Sensor {
   @Column(nullable = false)
   private int mode;
 
+  @Column(nullable = false)
+  private Long user;
+
   public Sensor() {}
 
-  public Sensor(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, int pin, String label, int mode) {
+  public Sensor(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, int pin, String label, int mode, Long user) {
     this.id = id;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.pin = pin;
     this.label = label;
     this.mode = mode;
+    this.user = user;
   }
 
-  // Getters y Setters
   public Long getId() {
     return id;
   }
@@ -50,6 +49,10 @@ public class Sensor {
   public void setId(Long id) {
     this.id = id;
   }
+
+  public Long getUser() { return user; }
+
+  public void setUser(Long user){ this.user = user; }
 
   public LocalDateTime getCreatedAt() {
     return createdAt;
@@ -89,6 +92,14 @@ public class Sensor {
 
   public void setMode(int mode) {
     this.mode = mode;
+  }
+
+  @PreUpdate
+  protected void onUpdate() { this.updatedAt = LocalDateTime.now(); }
+  @PrePersist
+  protected void onCreate() {
+    this.createdAt = LocalDateTime.now();
+    this.updatedAt = LocalDateTime.now();
   }
 }
 

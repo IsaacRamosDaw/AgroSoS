@@ -28,24 +28,6 @@ public class User {
 
   public User() {}
 
-//  public User(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, String name, String email,
-//      String password) {
-//    this.id = id;
-//    this.createdAt = createdAt;
-//    this.updatedAt = updatedAt;
-//    this.name = name;
-//    this.email = email;
-//    this.password = password;
-//  }
-//
-//  public User(LocalDateTime createdAt, LocalDateTime updatedAt, String name, String email, String password) {
-//    this.createdAt = createdAt;
-//    this.updatedAt = updatedAt;
-//    this.name = name;
-//    this.email = email;
-//    this.password = password;
-//  }
-
   public Long getId() {
     return id;
   }
@@ -58,16 +40,8 @@ public class User {
     return createdAt;
   }
 
-  public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-  }
-
   public LocalDateTime getUpdatedAt() {
     return updatedAt;
-  }
-
-  public void setUpdatedAt(LocalDateTime updatedAt) {
-    this.updatedAt = updatedAt;
   }
 
   public String getName() {
