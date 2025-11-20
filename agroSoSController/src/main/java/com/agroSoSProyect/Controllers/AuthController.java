@@ -3,6 +3,7 @@ package com.agroSoSProyect.Controllers;
 import com.agroSoSProyect.Models.User;
 import com.agroSoSProyect.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
+@CrossOrigin("http://localhost:5173")
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -27,7 +29,7 @@ public class AuthController {
 					"message", "Usuario no encontrado");
 		}
 
-		if (!user.getPassword().equals(loginData.getPassword())) {
+		if (user != null && !(user.getPassword().equals(loginData.getPassword()))) {
 			return Map.of(
 					"success", false,
 					"message", "Contraseña incorrecta");
@@ -168,8 +170,10 @@ public class AuthController {
 	}
 
 	private boolean isAdmin(Long userId) {
+		if (userId == null) {
+			return false;
+		}
 		User user = userRepository.findById(userId).orElse(null);
 		return user != null && user.getRole() == com.agroSoSProyect.Models.Role.ADMIN;
 	}
-
 }

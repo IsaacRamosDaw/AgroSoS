@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-// Comprobar la ruta con React
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("http://localhost:5173")
 public class SensorController {
 
   @Autowired
@@ -25,6 +24,11 @@ public class SensorController {
     return sensorRespository
         .findById(id)
         .orElseThrow(() -> new SensorNotFoundException(id));
+  }
+
+  @GetMapping("/api/sensor/user/{id}")
+  List<Sensor> getSensorByUserId(@PathVariable Long id) {
+    return sensorRespository.findByUser(id);
   }
 
   @PostMapping("/api/sensor")
@@ -46,7 +50,9 @@ public class SensorController {
 
   @DeleteMapping("/api/sensor/{id}")
   String deleteSensor(@PathVariable Long id) {
-    if (!sensorRespository.existsById(id)) { throw new SensorNotFoundException(id); }
+    if (!sensorRespository.existsById(id)) {
+      throw new SensorNotFoundException(id);
+    }
     sensorRespository.deleteById(id);
     return "User with id " + id + " has been deleted success.";
   }

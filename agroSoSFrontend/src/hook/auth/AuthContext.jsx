@@ -37,38 +37,43 @@ export function AuthProvider({ children }) {
     else localStorage.removeItem("auth:user");
   }, [user]);
 
-  // Simulación de login (valida si hay algo escrito)
-  async function login(username, password) {
-    // En real: llamar a API, recibir token/perfil…
-    if (!username || !password) {
+  // Login real contra el backend
+  async function login(email, password) {
+    if (!email || !password) {
       throw new Error("Credenciales inválidas");
     }
-    // "username" aquí es el email introducido por el usuario en el formulario.
-    // Queremos almacenar `user.username` como la parte antes del '@'.
-    let email = username;
-    if (!email.includes("@")) {
-      // Si el usuario no puso un @, agregamos un dominio por defecto
-      email = `${username}@example.com`;
+
+    try {
+      const response = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message || "Error al iniciar sesión");
+      }
+
+      const user = data.user;
+      setUser(user);
+      return user;
+    } catch (error) {
+      console.error("Login error:", error);
+      throw error;
     }
-    const localPart = email.split("@")[0];
-    // Usuario "fake" con datos completos:
-    const fakeUser = {
-      id: 1,
-      username: localPart,
-      email: email,
-      password: password,
-      created_at: "2023-11-01T10:23:00.000Z",
-      updated_at: new Date().toISOString(),
-      terms_accepted: true,
-      role: "user",
-    };
-    setUser(fakeUser);
-    return fakeUser;
+  }
+
+  function isAdmin() {
+    return user && user.role === "ADMIN";
   }
 
   function logout() {
-    // null==> usuario no logeado
     setUser(null);
+    localStorage.removeItem("auth:user");
   }
 
   // Permite actualizar campos del usuario (por ejemplo desde un formulario de edición)
@@ -80,6 +85,6 @@ export function AuthProvider({ children }) {
     });
   }
 
-  const value = { user, loading, login, logout, updateUser };
+  const value = { user, loading, login, logout, updateUser, isAdmin };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

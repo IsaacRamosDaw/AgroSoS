@@ -40,7 +40,7 @@ export const Header = () => {
                 src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
               />
               <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {user.username}
+                {user.name}
               </span>
             </CButton>
           </Link>

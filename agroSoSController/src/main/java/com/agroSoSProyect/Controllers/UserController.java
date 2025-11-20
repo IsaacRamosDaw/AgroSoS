@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-// Comprobar la ruta con React
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("http://localhost:5173")
+
 public class UserController {
 
   @Autowired
@@ -27,6 +27,7 @@ public class UserController {
         .findById(id)
         .orElseThrow(() -> new UserNotFoundException(id));
   }
+
   @PostMapping("/api/user")
   User newUser(@RequestBody User newUser) {
     return userRepository.save(newUser);
@@ -35,18 +36,20 @@ public class UserController {
   @PutMapping("/api/user/{id}")
   User updateUser(@RequestBody User newUser, @PathVariable Long id) {
     return userRepository.findById(id)
-    .map(user -> {
-      user.setName(newUser.getName());
-      user.setEmail(newUser.getEmail());
-      user.setPassword(newUser.getPassword());
-      return userRepository.save(user);
-    })
-      .orElseThrow(() -> new UserNotFoundException(id));
+        .map(user -> {
+          user.setName(newUser.getName());
+          user.setEmail(newUser.getEmail());
+          user.setPassword(newUser.getPassword());
+          return userRepository.save(user);
+        })
+        .orElseThrow(() -> new UserNotFoundException(id));
   }
 
   @DeleteMapping("/api/user/{id}")
   String deleteUser(@PathVariable Long id) {
-    if (!userRepository.existsById(id)) { throw new UserNotFoundException(id); }
+    if (!userRepository.existsById(id)) {
+      throw new UserNotFoundException(id);
+    }
     userRepository.deleteById(id);
     return "User with id " + id + " has been deleted success.";
   }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   CButton,
   CCard,
@@ -11,24 +11,21 @@ import {
   CFormLabel,
   CRow,
 } from "@coreui/react";
+
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../hook/auth/AuthContext";
 
 export const FormLogin = () => {
-  // const {login} = useContext(userContext)
 
-  const { user, login } = useAuth();
+  const { user, login, isAdmin } = useAuth();
+
+  console.log(isAdmin());
 
   if (user) return <Navigate to={`/user/${user.id}`} />;
 
-  // const fakeUser = {
-  //   id: 1,
-  //   username: 'juan',
-  //   email: 'juan@example.com',
-  // }
-
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -37,20 +34,13 @@ export const FormLogin = () => {
     setError("");
     setLoading(true);
     try {
-      await login(username, password); // <— esto setea user en el contexto
+      await login(email, password); // <— esto setea user en el contexto
     } catch (err) {
       setError(err.message || "No se pudo iniciar sesión");
     } finally {
       setLoading(false);
     }
   }
-
-  // const navigate = useNavigate();
-  // const handleLogin = () => {
-  //   login(fakeUser);
-  //   alert("Datos guardados correctamente");
-  //   navigate(`/user/1`);
-  // };
 
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
@@ -74,8 +64,8 @@ export const FormLogin = () => {
                       type="email"
                       id="email"
                       placeholder="usuario@correo.com"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
                   <div className="mb-3">
