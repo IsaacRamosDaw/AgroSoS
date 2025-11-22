@@ -1,4 +1,9 @@
 import React, { useState } from 'react'
+
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../hook/auth/AuthContext'
+import { createUser } from '../services/user.services'
+
 import {
   CButton,
   CCard,
@@ -17,24 +22,78 @@ import {
 export const SignUpForm = () => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+
+  const [user, setUser] = useState({})
+
+  const { login } = useAuth();
+
+  const navigate = useNavigate()
+
+
   const [accepted, setAccepted] = useState(false)
   const [error, setError] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-
-    if (password !== confirmPassword) {
-      setError('Las contraseñas no coinciden.')
-      return
-    }
 
     if (!accepted) {
       setError('Debes aceptar los términos de uso.')
       return
     }
 
-    setError('')
-    console.log('Usuario registrado correctamente')
+    if (!name) {
+      setError('Debes ingresar un nombre.')
+      return
+    }
+
+    if (!email) {
+      setError('Debes ingresar un correo electrónico.')
+      return
+    }
+
+    if (!password) {
+      setError('Debes ingresar una contraseña.')
+      return
+    }
+
+    if (!confirmPassword) {
+      setError('Debes confirmar la contraseña.')
+      return
+    }
+
+    if (password !== confirmPassword) {
+      setError('Las contraseñas no coinciden.')
+      return
+    }
+
+    const userData = {
+      name: name,
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
+      accepted: accepted,
+    }
+
+    setUser(userData);
+
+    try {
+      const createdUser = await createUser(userData)
+      if (createdUser) {
+
+        console.log("createdUser response:", createdUser)
+
+        console.log('Usuario registrado y logueado correctamente')
+
+        await login(userData.email, userData.password)
+
+        navigate(`/user/${createdUser.id}`)
+      }
+    } catch (err) {
+      console.error(err)
+      setError('Error al crear el usuario. Inténtalo de nuevo.')
+    }
   }
 
   return (
@@ -57,6 +116,7 @@ export const SignUpForm = () => {
                       id="username"
                       placeholder="Tu nombre de usuario"
                       required
+                      onChange={(e) => setName(e.target.value)}
                     />
                   </div>
 
@@ -67,6 +127,7 @@ export const SignUpForm = () => {
                       id="email"
                       placeholder="usuario@correo.com"
                       required
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
 

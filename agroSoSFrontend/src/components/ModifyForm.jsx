@@ -1,4 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
+import { updateUser as updateUserService } from '../services/user.services'
+import { useAuth } from '../hook/auth/AuthContext'
 import {
   CForm,
   CFormInput,
@@ -10,28 +13,49 @@ import {
   CCol,
 } from '@coreui/react'
 
-export function ModifyForm({ user, onSubmit }) {
-  const [formData, setFormData] = useState({
-    username: user.username || '',
-    email: user.email || '',
-    password: '',
-    confirmPassword: '',
-  })
+export function ModifyForm({ user }) {
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const { updateUser } = useAuth()
+  const [username, setUsername] = useState(user?.name || '')
+  const [email, setEmail] = useState(user?.email || '')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    })
-  }
+  useEffect(() => {
+    if (user) {
+      setUsername(user.name || '')
+      setEmail(user.email || '')
+    }
+  }, [user])
+
+  const userData = {}
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (formData.password !== formData.confirmPassword) {
+
+    if (password !== confirmPassword) {
       alert('Las contraseñas no coinciden')
       return
     }
-    onSubmit(formData)
+
+    userData.id = id
+    userData.name = username
+    userData.email = email
+    userData.password = password
+
+    handleEditUser()
+  }
+
+  const handleEditUser = async () => {
+    const userModified = await updateUserService(userData)
+
+    console.log("userModified")
+    console.log(userModified)
+
+    updateUser(userModified)
+
+    navigate(`/user/${userModified.id}`)
   }
 
   return (
@@ -48,8 +72,8 @@ export function ModifyForm({ user, onSubmit }) {
                   type="text"
                   id="username"
                   name="username"
-                  value={formData.username}
-                  onChange={handleChange}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   required
                 />
               </div>
@@ -60,8 +84,8 @@ export function ModifyForm({ user, onSubmit }) {
                   type="email"
                   id="email"
                   name="email"
-                  value={formData.email}
-                  onChange={handleChange}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -72,8 +96,7 @@ export function ModifyForm({ user, onSubmit }) {
                   type="password"
                   id="password"
                   name="password"
-                  value={formData.password}
-                  onChange={handleChange}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
@@ -84,8 +107,7 @@ export function ModifyForm({ user, onSubmit }) {
                   type="password"
                   id="confirmPassword"
                   name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                 />
               </div>

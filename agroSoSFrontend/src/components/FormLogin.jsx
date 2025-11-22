@@ -12,14 +12,12 @@ import {
   CRow,
 } from "@coreui/react";
 
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../hook/auth/AuthContext";
 
 export const FormLogin = () => {
 
-  const { user, login, isAdmin } = useAuth();
-
-  console.log(isAdmin());
+  const { user, login } = useAuth();
 
   if (user) return <Navigate to={`/user/${user.id}`} />;
 
@@ -78,10 +76,15 @@ export const FormLogin = () => {
                       onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
-                  <div className="d-grid">
+                  <div className="d-grid gap-2">
                     <CButton color="primary" type="submit" disabled={loading}>
                       {loading ? "Cargando..." : "Entrar"}
                     </CButton>
+                    <Link to="/signIn">
+                      <CButton color="secondary" className="w-100">
+                        Crear cuenta
+                      </CButton>
+                    </Link>
                   </div>
                 </CForm>
               </CCardBody>
