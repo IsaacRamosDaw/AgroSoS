@@ -3,6 +3,7 @@ package com.agroSoSProyect.Controllers;
 import com.agroSoSProyect.Models.User;
 import com.agroSoSProyect.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+// Ahora mismo esto devuelve la contraseña lo cuál no debería
+// No se está generando el JWT
+// Debería devolver un DTO
+
 @RestController
 @CrossOrigin("http://localhost:5173")
 @RequestMapping("/auth")
@@ -18,6 +23,9 @@ public class AuthController {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@PostMapping("/login")
 	public Map<String, Object> login(@RequestBody User loginData) {
@@ -29,7 +37,7 @@ public class AuthController {
 					"message", "Usuario no encontrado");
 		}
 
-		if (user != null && !(user.getPassword().equals(loginData.getPassword()))) {
+		if (user != null && !passwordEncoder.matches(loginData.getPassword(), user.getPassword())) {
 			return Map.of(
 					"success", false,
 					"message", "Contraseña incorrecta");
@@ -51,6 +59,7 @@ public class AuthController {
 					"message", "El email ya está registrado");
 		}
 
+		newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 		User savedUser = userRepository.save(newUser);
 
 		return Map.of(
