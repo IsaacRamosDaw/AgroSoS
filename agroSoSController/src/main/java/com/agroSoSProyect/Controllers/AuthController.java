@@ -16,6 +16,8 @@ import java.util.Map;
 // No se está generando el JWT
 // Debería devolver un DTO
 
+
+// 
 @RestController
 @CrossOrigin("http://localhost:5173")
 @RequestMapping("/auth")
