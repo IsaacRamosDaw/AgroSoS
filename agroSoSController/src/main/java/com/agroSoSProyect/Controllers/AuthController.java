@@ -5,7 +5,9 @@ import com.agroSoSProyect.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,7 +62,7 @@ public class AuthController {
 					"message", "El email ya está registrado");
 		}
 
-		newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+		newUser.setPassword(hashPassword(newUser.getPassword()));
 		User savedUser = userRepository.save(newUser);
 
 		return Map.of(
@@ -179,11 +181,42 @@ public class AuthController {
 				"message", "Se han revocado los permisos de administrador correctamente");
 	}
 
+	@PutMapping("/update/{id}")
+	public Map<String, Object> updateUser(@PathVariable Long id, @RequestBody User newUser) {
+		User user = userRepository.findById(id).orElse(null);
+
+		if (user == null) {
+			return Map.of(
+					"success", false,
+					"message", "Usuario no encontrado");
+		}
+
+		if (newUser.getName() != null)
+			user.setName(newUser.getName());
+		if (newUser.getEmail() != null)
+			user.setEmail(newUser.getEmail());
+
+		if (newUser.getPassword() != null && !newUser.getPassword().isEmpty()) {
+			user.setPassword(hashPassword(newUser.getPassword()));
+		}
+
+		User savedUser = userRepository.save(user);
+
+		return Map.of(
+				"success", true,
+				"message", "Usuario actualizado correctamente",
+				"user", savedUser);
+	}
+
 	private boolean isAdmin(Long userId) {
 		if (userId == null) {
 			return false;
 		}
 		User user = userRepository.findById(userId).orElse(null);
 		return user != null && user.getRole() == com.agroSoSProyect.Models.Role.ADMIN;
+	}
+
+	private String hashPassword(String password) {
+		return passwordEncoder.encode(password);
 	}
 }
