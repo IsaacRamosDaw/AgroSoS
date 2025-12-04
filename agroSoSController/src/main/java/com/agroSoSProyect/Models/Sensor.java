@@ -33,13 +33,13 @@ public class Sensor {
   public Sensor() {}
 
   public Sensor(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, int pin, String label, int mode, Long user) {
-    this.id = id;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
-    this.pin = pin;
-    this.label = label;
-    this.mode = mode;
-    this.user = user;
+    this.id = id; //ID del sensor individual
+    this.createdAt = createdAt;// SE QUITAN, VAN PARA READINGS
+    this.updatedAt = updatedAt;// SE QUITAN, VAN PARA READINGS
+    this.pin = pin; 
+    this.label = label; // Nombre del sensor -> Dado por el ID. Ej: "BOT-Luz", "Tractor-IntensidadSalidaBateria"2 ???
+    this.mode = mode; // Modo del sensor, no se si "Entrada/Salida" o "ANALOGICO/DIGITAL"
+    this.user = user; // ID del usuario al que pertenece el sensor (Tiene sentido siquiera?)
   }
 
   public Long getId() {
