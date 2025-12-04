@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Header } from "../components/Header";
 import { CButton } from "@coreui/react";
+import { currentSensors, sensorHistory } from "../data/tractor";
 
 function Tractor() {
   const [lastUpdate, setLastUpdate] = useState(new Date().toLocaleTimeString());
@@ -10,44 +11,6 @@ function Tractor() {
     setLastUpdate(new Date().toLocaleTimeString());
     setSelectedDate(null);
   };
-
-  // Historial con los sensores del tractor (se ajustan a los nombres requeridos)
-  const sensorHistory = [
-    {
-      date: "2024-11-20",
-      time: "14:30",
-      sensors: [
-        { name: "Voltaje Batería", value: "12.6", unit: "V" },
-        { name: "Voltaje Placa", value: "18.4", unit: "V" },
-        { name: "Intesidad Salida Batería", value: "3.2", unit: "A" },
-        { name: "Intensidad Entrada Batería", value: "2.8", unit: "A" },
-        { name: "Potencia Batería", value: "40.3", unit: "W" },
-        { name: "Potencia Placa", value: "52.0", unit: "W" },
-      ],
-    },
-    {
-      date: "2024-11-20",
-      time: "12:00",
-      sensors: [
-        { name: "Voltaje Batería", value: "12.4", unit: "V" },
-        { name: "Voltaje Placa", value: "17.8", unit: "V" },
-        { name: "Intesidad Salida Batería", value: "3.0", unit: "A" },
-        { name: "Intensidad Entrada Batería", value: "2.6", unit: "A" },
-        { name: "Potencia Batería", value: "37.2", unit: "W" },
-        { name: "Potencia Placa", value: "48.5", unit: "W" },
-      ],
-    },
-  ];
-
-  // Sensores actuales del Tractor (nombres solicitados)
-  const currentSensors = [
-    { name: "Voltaje Batería", value: "12.6", unit: "V" },
-    { name: "Voltaje Placa", value: "18.4", unit: "V" },
-    { name: "Intesidad Salida Batería", value: "3.2", unit: "A" },
-    { name: "Intensidad Entrada Batería", value: "2.8", unit: "A" },
-    { name: "Potencia Batería", value: "40.3", unit: "W" },
-    { name: "Potencia Placa", value: "52.0", unit: "W" },
-  ];
 
   const displaySensors = selectedDate ? selectedDate.sensors : currentSensors;
 
@@ -71,7 +34,7 @@ function Tractor() {
               </div>
             </div>
 
-            {/* Grid of sensors. */}
+            {/* Grid of sensors: 3 columns, 2 rows (6 items total). */}
             <div
               style={{
                 display: "grid",
@@ -81,68 +44,23 @@ function Tractor() {
                 margin: "0 auto",
               }}
             >
-              {(() => {
-                // Classify sensors: batería, placa, intensidad (handle both 'Intesidad' and 'Intensidad'), others
-                const bateria = displaySensors.filter(s => /Bater[ií]a|Bateria/i.test(s.name));
-                const placa = displaySensors.filter(s => /Placa/i.test(s.name));
-                const intensidad = displaySensors.filter(s => /Intens?idad|Intesidad/i.test(s.name));
-                const others = displaySensors.filter(s => !/Bater[ií]a|Bateria|Placa|Intens?idad|Intesidad/i.test(s.name));
-
-                const ordered = [];
-
-                // Row 1: bateria col1, bateria col2, intensidad col3
-                if (bateria[0]) ordered.push({ item: bateria[0], row: 1, col: 1 });
-                if (bateria[1]) ordered.push({ item: bateria[1], row: 1, col: 2 });
-                if (intensidad[0]) ordered.push({ item: intensidad[0], row: 1, col: 3 });
-
-                // Row 2: placa col1, placa col2, intensidad col3 (second intensity)
-                if (placa[0]) ordered.push({ item: placa[0], row: 2, col: 1 });
-                if (placa[1]) ordered.push({ item: placa[1], row: 2, col: 2 });
-                if (intensidad[1]) ordered.push({ item: intensidad[1], row: 2, col: 3 });
-
-                // Place remaining intensidad items down column 3 starting at row 3
-                for (let i = 2; i < intensidad.length; i++) {
-                  const row = 3 + (i - 2);
-                  ordered.push({ item: intensidad[i], row, col: 3 });
-                }
-
-                // Now place remaining bateria/placa/others into columns 1 and 2 starting at row 3
-                let row = 3;
-                let col = 1;
-                const remainder = [];
-                // take remaining bateria beyond first two
-                for (let i = 2; i < bateria.length; i++) remainder.push(bateria[i]);
-                // remaining placa beyond first two
-                for (let i = 2; i < placa.length; i++) remainder.push(placa[i]);
-                // other sensors
-                for (let i = 0; i < others.length; i++) remainder.push(others[i]);
-
-                remainder.forEach((item) => {
-                  ordered.push({ item, row, col });
-                  if (col === 1) col = 2;
-                  else { col = 1; row += 1; }
-                });
-
-                return ordered.map((entry, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      gridColumn: entry.col,
-                      gridRow: entry.row,
-                      backgroundColor: "#f9f9f9",
-                      border: "2px solid #ddd",
-                      borderRadius: "8px",
-                      padding: "1.5rem",
-                      textAlign: "center",
-                      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                    }}
-                  >
-                    <h3 style={{ marginBottom: "0.5rem", color: "#333" }}>{entry.item.name}</h3>
-                    <p style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#0066cc", margin: 0 }}>{entry.item.value}</p>
-                    <p style={{ fontSize: "0.9rem", color: "#666", margin: "0.5rem 0 0 0" }}>{entry.item.unit}</p>
-                  </div>
-                ));
-              })()}
+              {displaySensors.map((sensor, index) => (
+                <div
+                  key={index}
+                  style={{
+                    backgroundColor: "#f9f9f9",
+                    border: "2px solid #ddd",
+                    borderRadius: "8px",
+                    padding: "1.5rem",
+                    textAlign: "center",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  }}
+                >
+                  <h3 style={{ marginBottom: "0.5rem", color: "#333" }}>{sensor.name}</h3>
+                  <p style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#0066cc", margin: 0 }}>{sensor.value}</p>
+                  <p style={{ fontSize: "0.9rem", color: "#666", margin: "0.5rem 0 0 0" }}>{sensor.unit}</p>
+                </div>
+              ))}
             </div>
           </div>
 
