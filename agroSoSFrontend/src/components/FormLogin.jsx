@@ -19,13 +19,15 @@ export const FormLogin = () => {
 
   const { user, login } = useAuth();
 
-  if (user) return <Navigate to={`/user/${user.id}`} />;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  if (user) return <Navigate to={`/user/${user.id}`} />;
+  // if (user.role !== "USER") return <Navigate to={`/admin/${user.id}`} />;
 
   async function handleSubmit(e) {
     e.preventDefault();
