@@ -7,6 +7,7 @@ import User from './views/User';
 import ModifyUser from './views/ModifyUser';
 import CreateUser from './views/CreateUser';
 import Admin from './views/Admin';
+import FarmBot from './views/FarmBot';
 
 // Components
 import { Footer } from './components/Footer';
@@ -15,6 +16,7 @@ import { Footer } from './components/Footer';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '@coreui/coreui/dist/css/coreui.min.css'
 import './App.css'
+import Tractor from './views/Tractor';
 
 function App() {
   return (<>
@@ -28,6 +30,8 @@ function App() {
           <Route path="/user/edit/:id" element={<ModifyUser/>}/>
           <Route path='/login' element={<Login/>}/>
           <Route path='/signIn' element={<CreateUser/>}/>
+          <Route path='/farmbot' element={<FarmBot/>}/>
+          <Route path='/tractor' element={<Tractor/>}/>
         </Routes>
       </BrowserRouter>
     <Footer/>

@@ -72,7 +72,7 @@ public class AuthController {
 	}
 
 	/*
-	 * Promueve un usuario a administradoEr
+	 * Promociona un usuario a administradoEr
 	 */
 	@PostMapping("/promote")
 	public Map<String, Object> promoteToAdmin(@RequestBody Map<String, Long> data) {
