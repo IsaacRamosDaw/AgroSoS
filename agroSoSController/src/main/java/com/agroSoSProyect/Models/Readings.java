@@ -16,10 +16,10 @@ public class Readings {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_reading", nullable = false)
-    private Long idReading;
+    @Column(nullable = false)
+    private Long id;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
@@ -40,31 +40,38 @@ public class Readings {
     @Column(nullable = false)
     private int z;
 
-    @Column(name = "created_by_user_id", nullable = false)
-    private Long createdByUserID;
+    @Column(nullable = false)
+    private Long user;
+
+    private Long plant;
+
+    @Column(nullable = false)
+    private Long sensor;
 
     public Readings() {
     }
 
-    public Readings(Long idReading, LocalDateTime createdAt, int mode, int pin, String value, int x, int y, int z,
-            Long createdByUserID) {
-        this.idReading = idReading;
-        this.createdAt = createdAt;
+    public Readings(Long id, int mode, int pin, String value, int x, int y, int z,
+            Long user, Long plant, Long sensor, LocalDateTime createdAt) {
+        this.id = id;
         this.mode = mode;
         this.pin = pin;
         this.value = value;
         this.x = x;
         this.y = y;
         this.z = z;
-        this.createdByUserID = createdByUserID;
+        this.user = user;
+        this.plant = plant;
+        this.sensor = sensor;
+        this.createdAt = createdAt;
     }
 
-    public Long getIdReading() {
-        return idReading;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdReading(Long idReading) {
-        this.idReading = idReading;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -123,12 +130,28 @@ public class Readings {
         this.z = z;
     }
 
-    public Long getCreatedByUserID() {
-        return createdByUserID;
+    public Long getUser() {
+        return user;
     }
 
-    public void setCreatedByUserID(Long createdByUserID) {
-        this.createdByUserID = createdByUserID;
+    public void setUser(Long user) {
+        this.user = user;
+    }
+
+    public Long getPlant() {
+        return plant;
+    }
+
+    public void setPlant(Long plant) {
+        this.plant = plant;
+    }
+
+    public Long getSensor() {
+        return sensor;
+    }
+
+    public void setSensor(Long sensor) {
+        this.sensor = sensor;
     }
 
     @PrePersist

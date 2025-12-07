@@ -11,12 +11,6 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "created_at", nullable = false)
-  private LocalDateTime createdAt;
-
-  @Column(name = "updated_at", nullable = false)
-  private LocalDateTime updatedAt;
-
   @Column(nullable = false)
   private String name;
 
@@ -30,7 +24,24 @@ public class User {
   @Column(nullable = false)
   private Role role;
 
+  @Column(nullable = false)
+  private LocalDateTime createdAt;
+
+  @Column(nullable = false)
+  private LocalDateTime updatedAt;
+
   public User() {
+  }
+
+  public User(Long id, String name, String email, String password, Role role, LocalDateTime createdAt,
+      LocalDateTime updatedAt) {
+    this.id = id;
+    this.name = name;
+    this.email = email;
+    this.password = password;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+    this.role = role;
   }
 
   public Long getId() {

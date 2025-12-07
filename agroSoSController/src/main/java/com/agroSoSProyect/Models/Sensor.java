@@ -7,8 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,14 +15,7 @@ public class Sensor {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  //OJO darle Column nombre y nullable = false?
   private Long id;
-
-  @Column(name = "created_at", nullable = false)
-  private LocalDateTime createdAt;
-
-  @Column(name = "updated_at", nullable = false)
-  private LocalDateTime updatedAt;
 
   @Column(nullable = false)
   private int pin;
@@ -33,20 +24,23 @@ public class Sensor {
   private String label;
 
   @Column(nullable = false)
+  private Long device;
+
+  @Column(nullable = false)
   private int mode;
 
   @Column(nullable = false)
   private Long user;
 
-  public Sensor() {} // OJO: Se borra esto?
+  public Sensor() {
+  }
 
-  public Sensor(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, int pin, String label, int mode, Long user) {
-    // OJO:Esto puede suponer cambios en Controllers
-    this.id = id; //ID del sensor individual
-    this.createdAt = createdAt;// SE QUITAN, VAN PARA READINGS
-    this.updatedAt = updatedAt;// SE QUITAN, VAN PARA READINGS
-    this.pin = pin; 
-    this.label = label; // Nombre del sensor -> Dado por el ID. Ej: "BOT-Luz", "Tractor-IntensidadSalidaBateria"2 ???
+  public Sensor(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, int pin, String label, Long device, int mode,
+      Long user) {
+    this.id = id;
+    this.pin = pin;
+    this.label = label; // Nombre del sensor -> Dado por el ID. Ej: "BOT-Luz",
+                        // "Tractor-IntensidadSalidaBateria"2 ???
     this.mode = mode; // Modo del sensor, no se si "Entrada/Salida" o "ANALOGICO/DIGITAL"
     this.user = user; // Sensor va a pertenecer a un DEVICE, no a un USER
     // Faltarían por añadir las relaciones con DEVICE cuando se haga el diagrama
@@ -60,24 +54,12 @@ public class Sensor {
     this.id = id;
   }
 
-  public Long getUser() { return user; }
-
-  public void setUser(Long user){ this.user = user; }
-
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
+  public Long getUser() {
+    return user;
   }
 
-  public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public LocalDateTime getUpdatedAt() {
-    return updatedAt;
-  }
-
-  public void setUpdatedAt(LocalDateTime updatedAt) {
-    this.updatedAt = updatedAt;
+  public void setUser(Long user) {
+    this.user = user;
   }
 
   public int getPin() {
@@ -104,12 +86,11 @@ public class Sensor {
     this.mode = mode;
   }
 
-  @PreUpdate
-  protected void onUpdate() { this.updatedAt = LocalDateTime.now(); }
-  @PrePersist
-  protected void onCreate() {
-    this.createdAt = LocalDateTime.now();
-    this.updatedAt = LocalDateTime.now();
+  public Long getDevice() {
+    return device;
+  }
+
+  public void setDevice(Long device) {
+    this.device = device;
   }
 }
-

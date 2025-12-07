@@ -2,7 +2,7 @@ package com.agroSoSProyect.Controllers;
 
 import com.agroSoSProyect.Exception.Sensor.SensorNotFoundException;
 import com.agroSoSProyect.Models.Sensor;
-import com.agroSoSProyect.Repository.SensorRespository;
+import com.agroSoSProyect.Repository.SensorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -12,48 +12,48 @@ import java.util.List;
 public class SensorController {
 
   @Autowired
-  private SensorRespository sensorRespository;
+  private SensorRepository sensorRepository;
 
   @GetMapping("/api/allSensor")
   List<Sensor> getAllSensors() {
-    return sensorRespository.findAll();
+    return sensorRepository.findAll();
   }
 
   @GetMapping("/api/sensor/{id}")
   Sensor getSensorById(@PathVariable Long id) {
-    return sensorRespository
+    return sensorRepository
         .findById(id)
         .orElseThrow(() -> new SensorNotFoundException(id));
   }
 
   @GetMapping("/api/sensor/user/{id}")
   List<Sensor> getSensorByUserId(@PathVariable Long id) {
-    return sensorRespository.findByUser(id);
+    return sensorRepository.findByUser(id);
   }
 
   @PostMapping("/api/sensor")
   Sensor newSensor(@RequestBody Sensor newSensor) {
-    return sensorRespository.save(newSensor);
+    return sensorRepository.save(newSensor);
   }
 
   @PutMapping("/api/sensor/{id}")
   Sensor updateSensor(@RequestBody Sensor newSensor, @PathVariable Long id) {
-    return sensorRespository.findById(id)
+    return sensorRepository.findById(id)
         .map(sensor -> {
           sensor.setPin(newSensor.getPin());
           sensor.setLabel(newSensor.getLabel());
           sensor.setMode(newSensor.getMode());
-          return sensorRespository.save(sensor);
+          return sensorRepository.save(sensor);
         })
         .orElseThrow(() -> new SensorNotFoundException(id));
   }
 
   @DeleteMapping("/api/sensor/{id}")
   String deleteSensor(@PathVariable Long id) {
-    if (!sensorRespository.existsById(id)) {
+    if (!sensorRepository.existsById(id)) {
       throw new SensorNotFoundException(id);
     }
-    sensorRespository.deleteById(id);
+    sensorRepository.deleteById(id);
     return "User with id " + id + " has been deleted success.";
   }
 }

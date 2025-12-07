@@ -28,7 +28,7 @@ public class AccessController {
 
   @GetMapping("/api/access/user/{userId}")
   List<Access> getAccessByUserId(@PathVariable Long userId) {
-    return accessRepository.findByUserId(userId);
+    return accessRepository.findByUser(userId);
   }
 
   @PostMapping("/api/access")

@@ -1,5 +1,6 @@
 package com.agroSoSProyect.Models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,18 +13,21 @@ public class Access {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(nullable = false)
   private Long id;
 
-  private Long userId;
+  @Column(nullable = false)
+  private Long user;
 
-  private Long deviceId;
+  @Column(nullable = false)
+  private Long device;
 
   public Access() {
   }
 
-  public Access(Long userId, Long deviceId) {
-    this.userId = userId;
-    this.deviceId = deviceId;
+  public Access(Long user, Long device) {
+    this.user = user;
+    this.device = device;
   }
 
   public Long getId() {
@@ -34,19 +38,19 @@ public class Access {
     this.id = id;
   }
 
-  public Long getUserId() {
-    return userId;
+  public Long getUser() {
+    return user;
   }
 
-  public void setUserId(Long userId) {
-    this.userId = userId;
+  public void setUser(Long user) {
+    this.user = user;
   }
 
-  public Long getDeviceId() {
-    return deviceId;
+  public Long getDevice() {
+    return device;
   }
 
-  public void setDeviceId(Long deviceId) {
-    this.deviceId = deviceId;
+  public void setDevice(Long device) {
+    this.device = device;
   }
 }

@@ -1,7 +1,7 @@
 package com.agroSoSProyect.Controllers;
 
 import com.agroSoSProyect.Exception.Reading.ReadingNotFoundException;
-import com.agroSoSProyect.Models.Reading;
+import com.agroSoSProyect.Models.Readings;
 import com.agroSoSProyect.Repository.ReadingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,28 +16,28 @@ public class ReadingController {
   private ReadingRepository readingRepository;
 
   @GetMapping("/api/reading")
-  List<Reading> getAllReadings() {
+  List<Readings> getAllReadings() {
     return readingRepository.findAll();
   }
 
   @GetMapping("/api/reading/{id}")
-  Reading getReadingById(@PathVariable Long id) {
+  Readings getReadingById(@PathVariable Long id) {
     return readingRepository.findById(id)
         .orElseThrow(() -> new ReadingNotFoundException(id));
   }
 
   @GetMapping("/api/reading/plant/{plantId}")
-  List<Reading> getReadingByPlantId(@PathVariable Long plantId) {
+  List<Readings> getReadingByPlantId(@PathVariable Long plantId) {
     return readingRepository.findByPlant(plantId);
   }
 
   @GetMapping("/api/reading/sensor/{sensorId}")
-  List<Reading> getReadingBySensorId(@PathVariable Long sensorId) {
+  List<Readings> getReadingBySensorId(@PathVariable Long sensorId) {
     return readingRepository.findBySensor(sensorId);
   }
 
   @PostMapping("/api/reading")
-  Reading newReading(@RequestBody Reading newReading) {
+  Readings newReading(@RequestBody Readings newReading) {
     return readingRepository.save(newReading);
   }
 

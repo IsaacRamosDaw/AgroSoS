@@ -9,7 +9,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 
 @Entity
-@Table(name = "devices")
+@Table(name = "device")
 public class Device {
 
   @Id
@@ -18,13 +18,17 @@ public class Device {
 
   private String name;
 
+  private Long user;
+
   @Enumerated(EnumType.STRING)
   private DeviceType type;
 
   public Device() {
   }
 
-  public Device(String name, DeviceType type) {
+  public Device(Long id, Long user, String name, DeviceType type) {
+    this.id = id;
+    this.user = user;
     this.name = name;
     this.type = type;
   }
@@ -51,5 +55,13 @@ public class Device {
 
   public void setType(DeviceType type) {
     this.type = type;
+  }
+
+  public Long getUser() {
+    return user;
+  }
+
+  public void setUser(Long user) {
+    this.user = user;
   }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface AccessRepository extends JpaRepository<Access, Long> {
-  List<Access> findByUserId(Long userId);
+  List<Access> findByUser(Long userId);
 
-  List<Access> findByDeviceId(Long deviceId);
+  List<Access> findByDevice(Long device);
 }
