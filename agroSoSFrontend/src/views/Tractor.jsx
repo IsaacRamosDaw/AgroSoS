@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Header } from "../components/Header";
 import { CButton } from "@coreui/react";
-import { currentSensors, sensorHistory } from "../data/tractor";
+import { currentSensors, sensorHistory } from "../data/tractorData";
 
 function Tractor() {
   const [lastUpdate, setLastUpdate] = useState(new Date().toLocaleTimeString());
@@ -28,13 +28,13 @@ function Tractor() {
               <CButton color="primary" onClick={handleUpdateSensors}>
                 Actualizar Sensores
               </CButton>
-              {/* Temperatura Ambiente: small metric displayed near controls */}
+              {/* Temperatura Ambiente */}
               <div style={{ background: "#fff", border: "1px solid #ddd", padding: "0.5rem 0.75rem", borderRadius: "6px", fontSize: "0.95rem" }}>
                 <strong>Temperatura Ambiente:</strong> 21°C
               </div>
             </div>
 
-            {/* Grid of sensors: 3 columns, 2 rows (6 items total). */}
+            {/* Grid de sensores */}
             <div
               style={{
                 display: "grid",
@@ -64,9 +64,8 @@ function Tractor() {
             </div>
           </div>
 
-          {/* Right reserved history area - 25vw */}
+          {/* 25vw Derecha */}
           <div style={{ width: "25vw", position: "relative" }}>
-            {/* Historial heading placed outside the scrollable box */}
             <h3 style={{ textAlign: "center", fontSize: "2rem", fontWeight: "bold", margin: "0 0 1.5rem 0" }}>Historial</h3>
             <div
               style={{
