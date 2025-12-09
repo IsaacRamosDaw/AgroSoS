@@ -16,10 +16,14 @@ public class Access {
   @Column(nullable = false)
   private Long id;
 
-  @Column(nullable = false)
+  // @Column(nullable = false)
+  // @ManyToOne(fetch = FetchType.LAZY)
+  // @JoinColumn(name = "user_id", nullable = false)
   private Long user;
 
-  @Column(nullable = false)
+  // @Column(nullable = false)
+  // @ManyToOne(fetch = FetchType.LAZY)
+  // @JoinColumn(name = "device_id", nullable = false)
   private Long device;
 
   public Access() {

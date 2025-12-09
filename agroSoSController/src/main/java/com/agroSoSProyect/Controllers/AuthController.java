@@ -1,7 +1,10 @@
 package com.agroSoSProyect.Controllers;
 
 import com.agroSoSProyect.Models.User;
+import com.agroSoSProyect.Models.Access;
 import com.agroSoSProyect.Repository.UserRepository;
+import com.agroSoSProyect.Repository.AccessRepository;
+import com.agroSoSProyect.Repository.DeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,11 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-// Ahora mismo esto devuelve la contraseña lo cuál no debería
-// No se está generando el JWT
-// Debería devolver un DTO
-
-// 
 @RestController
 @CrossOrigin("http://localhost:5173")
 @RequestMapping("/auth")
@@ -28,7 +26,13 @@ public class AuthController {
 	private UserRepository userRepository;
 
 	@Autowired
+	private AccessRepository accessRepository;
+
+	@Autowired
 	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private DeviceRepository deviceRepository;
 
 	@PostMapping("/login")
 	public Map<String, Object> login(@RequestBody User loginData) {
@@ -46,10 +50,17 @@ public class AuthController {
 					"message", "Contraseña incorrecta");
 		}
 
+		Access newAccess = new Access(user.getId(), 1L);
+		accessRepository.save(newAccess);
+
+		Long accessId = newAccess.getId();
+
 		return Map.of(
 				"success", true,
-				"message", "Login exitoso",
-				"user", user);
+				"message", "Usuario registrado correctamente",
+				"user", user,
+				"access", accessId,
+				"device", deviceRepository.findByUser(user.getId()));
 	}
 
 	@PostMapping("/register")
@@ -65,10 +76,18 @@ public class AuthController {
 		newUser.setPassword(hashPassword(newUser.getPassword()));
 		User savedUser = userRepository.save(newUser);
 
+		Access newAccess = new Access(savedUser.getId(), 1L);
+		accessRepository.save(newAccess);
+
+		Long accessId = newAccess.getId();
+
 		return Map.of(
 				"success", true,
 				"message", "Usuario registrado correctamente",
-				"user", savedUser);
+				"user", savedUser,
+				"access", accessId,
+        
+				"device", deviceRepository.findByUser(savedUser.getId()));
 	}
 
 	/*
@@ -201,11 +220,16 @@ public class AuthController {
 		}
 
 		User savedUser = userRepository.save(user);
+		Access newAccess = new Access(savedUser.getId(), 1L);
+		accessRepository.save(newAccess);
 
+		Long accessId = newAccess.getId();
 		return Map.of(
 				"success", true,
 				"message", "Usuario actualizado correctamente",
-				"user", savedUser);
+				"user", savedUser,
+				"access", accessId,
+				"device", deviceRepository.findByUser(savedUser.getId()));
 	}
 
 	private boolean isAdmin(Long userId) {

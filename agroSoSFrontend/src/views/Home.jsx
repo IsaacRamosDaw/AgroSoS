@@ -1,15 +1,13 @@
-import React from 'react'
-import Login from './Login'
-import {SensorList} from '../components/SensorsList'
+import { SensorList } from '../components/SensorsList'
 import { Header } from '../components/Header'
 import DeviceSelection from '../components/DeviceSelection'
-
+import './style/home.css'
 function Home() {
   return (
-    <div>
-      <Header/>
-      <DeviceSelection/>
-      <SensorList/>
+    <div className="home">
+      <Header />
+      <DeviceSelection />
+      <SensorList />
     </div>
   )
 }

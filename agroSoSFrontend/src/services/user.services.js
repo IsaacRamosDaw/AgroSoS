@@ -23,13 +23,13 @@ export const createUser = async (user) => {
 export const updateUser = async (user) => {
     console.log("user in updateUser")
     console.log(user)
-    const response = await fetch(`http://localhost:8080/api/user/${user.id}`, {
+    const response = await fetch(`http://localhost:8080/auth/update/${user.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(user)
     });
     const data = await response.json();
-    return data;
+    return data.user;
 }
 
 export const deleteUser = async (id) => {

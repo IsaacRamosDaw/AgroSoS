@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
     if (raw) {
       try {
         setUser(JSON.parse(raw));
-      } catch {}
+      } catch { }
     }
     setLoading(false);
   }, []);
@@ -54,11 +54,14 @@ export function AuthProvider({ children }) {
 
       const data = await response.json();
 
+      console.log(data);
+
       if (!data.success) {
         throw new Error(data.message || "Error al iniciar sesión");
       }
 
       const user = data.user;
+      user.device = data.device;
       setUser(user);
       return user;
     } catch (error) {

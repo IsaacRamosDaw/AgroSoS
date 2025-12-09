@@ -26,6 +26,11 @@ public class DeviceController {
         .orElseThrow(() -> new DeviceNotFoundException(id));
   }
 
+  @GetMapping("/api/device/user/{userId}")
+  List<Device> getDevicesByUser(@PathVariable Long userId) {
+    return deviceRepository.findByUser(userId);
+  }
+
   @PostMapping("/api/device")
   Device newDevice(@RequestBody Device newDevice) {
     return deviceRepository.save(newDevice);

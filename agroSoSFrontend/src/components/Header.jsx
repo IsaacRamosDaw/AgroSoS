@@ -11,7 +11,7 @@ export const Header = () => {
       <CContainer className="d-flex justify-content-between align-items-center">
         <Link
           to="/home"
-          className="text-white text-decoration-none"
+          className="header-link text-decoration-none"
           style={{ fontSize: "1.5rem", fontWeight: "bold" }}
         >
           AgroSoS
@@ -19,14 +19,14 @@ export const Header = () => {
         <div className="d-flex gap-4 align-items-center">
           <Link
             to="/farmbot"
-            className="text-white text-decoration-none"
+            className="header-link text-decoration-none"
             style={{ fontSize: "1.5rem", fontWeight: "bold" }}
           >
             FarmBOT
           </Link>
           <Link
             to="/tractor"
-            className="text-white text-decoration-none"
+            className="header-link text-decoration-none"
             style={{ fontSize: '1.5rem', fontWeight: 'bold' }}
           >
             Tractor

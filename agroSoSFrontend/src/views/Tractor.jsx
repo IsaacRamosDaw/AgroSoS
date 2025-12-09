@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Header } from "../components/Header";
 import { CButton } from "@coreui/react";
 import { currentSensors, sensorHistory } from "../data/tractorData";
+import { useAuth } from "../hook/auth/AuthContext";
 
 function Tractor() {
   const [lastUpdate, setLastUpdate] = useState(new Date().toLocaleTimeString());
@@ -13,6 +14,8 @@ function Tractor() {
   };
 
   const displaySensors = selectedDate ? selectedDate.sensors : currentSensors;
+  const auth = useAuth();
+  const user = auth.user;
 
   return (
     <>

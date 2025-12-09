@@ -1,0 +1,8 @@
+.header-link {
+  color: white !important;
+  transition: color 0.3s ease;
+}
+
+.header-link:hover {
+  color: #cccccc !important;
+}
