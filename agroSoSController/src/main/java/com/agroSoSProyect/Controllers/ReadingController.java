@@ -15,7 +15,7 @@ public class ReadingController {
   @Autowired
   private ReadingRepository readingRepository;
 
-  @GetMapping("/api/reading")
+  @GetMapping("/api/reading/")
   List<Readings> getAllReadings() {
     return readingRepository.findAll();
   }

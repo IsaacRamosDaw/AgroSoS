@@ -38,10 +38,9 @@ public class Sensor {
   @Column(nullable = false)
   private LocalDateTime updatedAt;
 
-  public Sensor() {
-  }
+  public Sensor() {}
 
-  public Sensor(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, int pin, String label, Long device, int mode) {
+  public Sensor(Long id, int pin, String label, Long device, int mode) {
     this.id = id;
     this.pin = pin;
     this.label = label;
