@@ -6,7 +6,6 @@ import com.agroSoSProyect.Repository.UserRepository;
 import com.agroSoSProyect.Repository.AccessRepository;
 import com.agroSoSProyect.Repository.DeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Map;
 
@@ -53,13 +53,10 @@ public class AuthController {
 		Access newAccess = new Access(user.getId(), 1L);
 		accessRepository.save(newAccess);
 
-		Long accessId = newAccess.getId();
-
 		return Map.of(
 				"success", true,
 				"message", "Usuario registrado correctamente",
 				"user", user,
-				"access", accessId,
 				"device", deviceRepository.findByUser(user.getId()));
 	}
 
@@ -79,14 +76,10 @@ public class AuthController {
 		Access newAccess = new Access(savedUser.getId(), 1L);
 		accessRepository.save(newAccess);
 
-		Long accessId = newAccess.getId();
-
 		return Map.of(
 				"success", true,
 				"message", "Usuario registrado correctamente",
 				"user", savedUser,
-				"access", accessId,
-        
 				"device", deviceRepository.findByUser(savedUser.getId()));
 	}
 
@@ -186,7 +179,7 @@ public class AuthController {
 					"message", "El usuario a revocar no se encontro");
 		}
 
-		if (isAdmin(targetUserId)) {
+		if (!isAdmin(targetUserId)) {
 			return Map.of(
 					"success", false,
 					"message", "El usuario no es administrador");

@@ -49,4 +49,9 @@ public class ReadingController {
     readingRepository.deleteById(id);
     return "Reading with id " + id + " has been deleted success.";
   }
+
+  @GetMapping("/api/reading/device/{deviceId}")
+  List<Readings> getReadingByDeviceId(@PathVariable Long deviceId) {
+    return readingRepository.findByDevice(deviceId);
+  }
 }

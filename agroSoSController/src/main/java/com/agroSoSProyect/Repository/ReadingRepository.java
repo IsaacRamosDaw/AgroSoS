@@ -12,4 +12,6 @@ public interface ReadingRepository extends JpaRepository<Readings, Long> {
   List<Readings> findByPlant(Long plantId);
 
   List<Readings> findBySensor(Long sensorId);
+
+  List<Readings> findByDevice(Long deviceId);
 }

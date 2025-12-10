@@ -41,18 +41,16 @@ public class Readings {
     private int z;
 
     @Column(nullable = false)
-    private Long user;
-
+    private Long device;
+    
     private Long plant;
 
     @Column(nullable = false)
     private Long sensor;
 
-    public Readings() {
-    }
+    public Readings() {}
 
-    public Readings(Long id, int mode, int pin, String value, int x, int y, int z,
-            Long user, Long plant, Long sensor, LocalDateTime createdAt) {
+    public Readings(Long id, int mode, int pin, String value, int x, int y, int z, Long device, Long plant, Long sensor, LocalDateTime createdAt) {
         this.id = id;
         this.mode = mode;
         this.pin = pin;
@@ -60,7 +58,7 @@ public class Readings {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.user = user;
+        this.device = device;
         this.plant = plant;
         this.sensor = sensor;
         this.createdAt = createdAt;
@@ -88,6 +86,14 @@ public class Readings {
 
     public void setMode(int mode) {
         this.mode = mode;
+    }
+
+    public Long getDevice() {
+        return device;
+    }
+
+    public void setDevice(Long device) {
+        this.device = device;
     }
 
     public int getPin() {
@@ -128,14 +134,6 @@ public class Readings {
 
     public void setZ(int z) {
         this.z = z;
-    }
-
-    public Long getUser() {
-        return user;
-    }
-
-    public void setUser(Long user) {
-        this.user = user;
     }
 
     public Long getPlant() {

@@ -26,9 +26,9 @@ public class SensorController {
         .orElseThrow(() -> new SensorNotFoundException(id));
   }
 
-  @GetMapping("/api/sensor/user/{id}")
-  List<Sensor> getSensorByUserId(@PathVariable Long id) {
-    return sensorRepository.findByUser(id);
+  @GetMapping("/api/sensor/device/{id}")
+  List<Sensor> getSensorByDeviceId(@PathVariable Long id) {
+    return sensorRepository.findByDevice(id);
   }
 
   @PostMapping("/api/sensor")

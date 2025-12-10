@@ -6,8 +6,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "sensor")
@@ -30,20 +33,20 @@ public class Sensor {
   private int mode;
 
   @Column(nullable = false)
-  private Long user;
+  private LocalDateTime createdAt;
+
+  @Column(nullable = false)
+  private LocalDateTime updatedAt;
 
   public Sensor() {
   }
 
-  public Sensor(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, int pin, String label, Long device, int mode,
-      Long user) {
+  public Sensor(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, int pin, String label, Long device, int mode) {
     this.id = id;
     this.pin = pin;
-    this.label = label; // Nombre del sensor -> Dado por el ID. Ej: "BOT-Luz",
-                        // "Tractor-IntensidadSalidaBateria"2 ???
-    this.mode = mode; // Modo del sensor, no se si "Entrada/Salida" o "ANALOGICO/DIGITAL"
-    this.user = user; // Sensor va a pertenecer a un DEVICE, no a un USER
-    // Faltarían por añadir las relaciones con DEVICE cuando se haga el diagrama
+    this.label = label;
+    this.mode = mode; // 1 - ANALOGICO 2 - DIGITAL
+    this.device = device;
   }
 
   public Long getId() {
@@ -52,14 +55,6 @@ public class Sensor {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public Long getUser() {
-    return user;
-  }
-
-  public void setUser(Long user) {
-    this.user = user;
   }
 
   public int getPin() {
@@ -92,5 +87,16 @@ public class Sensor {
 
   public void setDevice(Long device) {
     this.device = device;
+  }
+
+  @PrePersist
+  protected void onCreate() {
+    createdAt = LocalDateTime.now();
+    updatedAt = LocalDateTime.now();
+  }
+
+  @PreUpdate
+  protected void onUpdate() {
+    updatedAt = LocalDateTime.now();
   }
 }
