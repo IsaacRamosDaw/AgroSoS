@@ -6,11 +6,16 @@ import { useAuth } from "../hook/auth/AuthContext";
 export const Header = () => {
   const { user } = useAuth();
 
+  let link = "/home"
+  if (user) {
+    user.role === "ADMIN" ? link = "/adminDashBoard/:id" : link = "/user/:id"
+  }
+
   return (
     <CHeader position="sticky" className="bg-primary text-white shadow-sm py-3">
       <CContainer className="d-flex justify-content-between align-items-center">
         <Link
-          to="/home"
+          to={link}
           className="header-link text-decoration-none"
           style={{ fontSize: "1.5rem", fontWeight: "bold" }}
         >

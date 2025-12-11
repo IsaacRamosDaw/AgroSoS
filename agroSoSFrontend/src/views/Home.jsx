@@ -7,7 +7,6 @@ function Home() {
     <div className="home">
       <Header />
       <DeviceSelection />
-      <SensorList />
     </div>
   )
 }
