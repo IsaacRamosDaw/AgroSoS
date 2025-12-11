@@ -3,11 +3,12 @@ package com.agroSoSProyect.Controllers;
 import com.agroSoSProyect.Exception.User.UserNotFoundException;
 import com.agroSoSProyect.Models.User;
 import com.agroSoSProyect.Repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+  // Controlador que solamente usará el administrador
 @RestController
 @CrossOrigin("http://localhost:5173")
 
@@ -47,9 +48,7 @@ public class UserController {
 
   @DeleteMapping("/api/user/{id}")
   String deleteUser(@PathVariable Long id) {
-    if (!userRepository.existsById(id)) {
-      throw new UserNotFoundException(id);
-    }
+    if (!userRepository.existsById(id)) { throw new UserNotFoundException(id); }
     userRepository.deleteById(id);
     return "User with id " + id + " has been deleted success.";
   }

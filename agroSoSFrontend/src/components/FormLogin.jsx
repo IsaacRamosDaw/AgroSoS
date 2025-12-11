@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useAuth } from "../hook/auth/AuthContext";
 import {
   CButton,
   CCard,
@@ -12,12 +14,12 @@ import {
   CRow,
 } from "@coreui/react";
 
-import { Link, Navigate } from "react-router-dom";
-import { useAuth } from "../hook/auth/AuthContext";
 
 export const FormLogin = () => {
-
+  // Trae la variable user y la funcion login del contexto
   const { user, login } = useAuth();
+
+  const navigate = useNavigate(); 
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,15 +27,19 @@ export const FormLogin = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  if (user) return <Navigate to={`/user/${user.id}`} />;
-  // if (user.role !== "USER") return <Navigate to={`/admin/${user.id}`} />;
+  // Si el usuario ya esta logueado, redirige a la pagina del usuario
+  if (user) { return <Navigate to={`/user/${user.id}`} />; }
+
 
   async function handleSubmit(e) {
     e.preventDefault();
+
     setError("");
     setLoading(true);
+
     try {
-      await login(email, password); // <— esto setea user en el contexto
+      // Al hacer esto se setea el user en el contexto y se guarda en el local storage
+      await login(email, password);
     } catch (err) {
       setError(err.message || "No se pudo iniciar sesión");
     } finally {

@@ -1,10 +1,10 @@
 package com.agroSoSProyect.Controllers;
 
 import com.agroSoSProyect.Models.User;
-import com.agroSoSProyect.Models.Access;
+
 import com.agroSoSProyect.Repository.UserRepository;
-import com.agroSoSProyect.Repository.AccessRepository;
 import com.agroSoSProyect.Repository.DeviceRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Map;
 
+	// Controlador de Registro y Login tanto de usuarios como administradores
+	// También se encarga de promover y revocar permisos de administrador 
+	// Todos los métodos devuelven un map
 @RestController
 @CrossOrigin("http://localhost:5173")
 @RequestMapping("/auth")
@@ -24,9 +27,6 @@ public class AuthController {
 
 	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired
-	private AccessRepository accessRepository;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -50,9 +50,6 @@ public class AuthController {
 					"message", "Contraseña incorrecta");
 		}
 
-		Access newAccess = new Access(user.getId(), 1L);
-		accessRepository.save(newAccess);
-
 		return Map.of(
 				"success", true,
 				"message", "Usuario registrado correctamente",
@@ -72,9 +69,6 @@ public class AuthController {
 
 		newUser.setPassword(hashPassword(newUser.getPassword()));
 		User savedUser = userRepository.save(newUser);
-
-		Access newAccess = new Access(savedUser.getId(), 1L);
-		accessRepository.save(newAccess);
 
 		return Map.of(
 				"success", true,
@@ -213,18 +207,15 @@ public class AuthController {
 		}
 
 		User savedUser = userRepository.save(user);
-		Access newAccess = new Access(savedUser.getId(), 1L);
-		accessRepository.save(newAccess);
 
-		Long accessId = newAccess.getId();
 		return Map.of(
 				"success", true,
 				"message", "Usuario actualizado correctamente",
 				"user", savedUser,
-				"access", accessId,
 				"device", deviceRepository.findByUser(savedUser.getId()));
 	}
 
+	// Método para verificar si un usuario es administrador a través del id
 	private boolean isAdmin(Long userId) {
 		if (userId == null) {
 			return false;
@@ -233,6 +224,7 @@ public class AuthController {
 		return user != null && user.getRole() == com.agroSoSProyect.Models.Role.ADMIN;
 	}
 
+	// Método para hashear las contraseñas recibidas por el frontend
 	private String hashPassword(String password) {
 		return passwordEncoder.encode(password);
 	}

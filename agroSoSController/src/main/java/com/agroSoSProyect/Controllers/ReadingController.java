@@ -3,6 +3,7 @@ package com.agroSoSProyect.Controllers;
 import com.agroSoSProyect.Exception.Reading.ReadingNotFoundException;
 import com.agroSoSProyect.Models.Readings;
 import com.agroSoSProyect.Repository.ReadingRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -3,8 +3,10 @@ package com.agroSoSProyect.Controllers;
 import com.agroSoSProyect.Exception.Sensor.SensorNotFoundException;
 import com.agroSoSProyect.Models.Sensor;
 import com.agroSoSProyect.Repository.SensorRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController

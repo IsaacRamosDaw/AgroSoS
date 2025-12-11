@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+
 import { useAuth } from '../hook/auth/AuthContext'
 import { createUser } from '../services/user.services'
 
@@ -20,24 +20,20 @@ import {
 } from '@coreui/react'
 
 export const SignUpForm = () => {
+  const navigate = useNavigate()
+  const { login } = useAuth();
+
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-
-  const [user, setUser] = useState({})
-
-  const { login } = useAuth();
-
-  const navigate = useNavigate()
-
-
   const [accepted, setAccepted] = useState(false)
   const [error, setError] = useState('')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    // Comprobaciones
     if (!accepted) {
       setError('Debes aceptar los términos de uso.')
       return
@@ -68,6 +64,7 @@ export const SignUpForm = () => {
       return
     }
 
+    // Creación del objeto
     const userData = {
       name: name,
       email: email,
@@ -76,18 +73,19 @@ export const SignUpForm = () => {
       accepted: accepted,
     }
 
-    setUser(userData);
-
+  // Creación del usuario con el servicio de create en user
     try {
+      // Usuario con contraseña hasheada devuelto por el backend
       const createdUser = await createUser(userData)
       if (createdUser) {
-
-        console.log("createdUser response:", createdUser)
-
-        console.log('Usuario registrado y logueado correctamente')
-
+        
+        // Llamada al método login con lso datos no devueltos por el backend, El método update se encarga de hashear la contraseña
         await login(userData.email, userData.password)
 
+        // Esto daría error porque la contraseña ya está hasheada
+        // await login(createdUser.email, createdUser.password)
+
+        // Navegamos al perfil del usuario en concreto
         navigate(`/user/${createdUser.id}`)
       }
     } catch (err) {

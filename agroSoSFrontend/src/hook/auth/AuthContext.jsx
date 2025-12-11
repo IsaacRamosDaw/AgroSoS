@@ -1,37 +1,32 @@
+
 import { createContext, useContext, useEffect, useState } from "react";
+import { loginUser } from '../../services/user.services';
 
 // 1) Creamos el contexto
 const AuthContext = createContext(null);
 
-// 2) Hook de conveniencia
+// 2) Hook para usar el contexto
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth debe usarse dentro de <AuthProvider>");
   return ctx;
 }
 
-/**
- * AuthProvider
- * - Mantiene el estado de la sesión { user: {...} | null }
- * - Expone login() y logout()
- * - Persiste en localStorage para recordar sesión al recargar
- */
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null); // null = no autenticado
-  const [loading, setLoading] = useState(true); // para el "arranque"
+  // User que se guarda en el localStorage, si es modificado, Se cambia su valor y se vuelve a añadir
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Cargar sesión guardada al montar
+  // Recoge los datos del usuario del localStorage y establece la variable user
+  // Si no hay user porque no se ha registrado o logeado todavía este será null
   useEffect(() => {
-    const raw = localStorage.getItem("auth:user");
-    if (raw) {
-      try {
-        setUser(JSON.parse(raw));
-      } catch { }
-    }
+    const localData = localStorage.getItem("auth:user");
+    if (localData) { setUser(JSON.parse(localData)); }
     setLoading(false);
   }, []);
 
-  // Guardar cuando cambie
+  // En el momento que haya un registro o login, la variable user es modificado, activando este useEffect
+  // Guarda los datos del usuario en el localStorage en el momento que la variable user cambia
   useEffect(() => {
     if (user) localStorage.setItem("auth:user", JSON.stringify(user));
     else localStorage.removeItem("auth:user");
@@ -39,47 +34,36 @@ export function AuthProvider({ children }) {
 
   // Login real contra el backend
   async function login(email, password) {
-    if (!email || !password) {
-      throw new Error("Credenciales inválidas");
-    }
+    if (!email || !password) { throw new Error("Credenciales inválidas"); }
 
     try {
-      const response = await fetch("http://localhost:8080/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      console.log(data);
-
-      if (!data.success) {
-        throw new Error(data.message || "Error al iniciar sesión");
-      }
+      // Llama al servicio de login en user.service
+      const data = await loginUser(email, password);
 
       const user = data.user;
       user.device = data.device;
+
       setUser(user);
       return user;
+
     } catch (error) {
       console.error("Login error:", error);
       throw error;
     }
   }
 
+  // Comprueba si el usuario es admin
   function isAdmin() {
     return user && user.role === "ADMIN";
   }
 
+  // Logout, elimina la clave del localStorage
   function logout() {
     setUser(null);
     localStorage.removeItem("auth:user");
   }
 
-  // Permite actualizar campos del usuario (por ejemplo desde un formulario de edición)
+  // Permite actualizar campos del usuario
   function updateUser(updatedFields) {
     setUser((prev) => {
       if (!prev) return prev;
@@ -88,6 +72,8 @@ export function AuthProvider({ children }) {
     });
   }
 
+  // Valor que se pasa al contexto para que los componentes puedan acceder a las funciones
   const value = { user, loading, login, logout, updateUser, isAdmin };
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

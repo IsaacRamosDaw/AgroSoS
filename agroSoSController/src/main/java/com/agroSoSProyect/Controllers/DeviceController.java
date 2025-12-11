@@ -3,11 +3,14 @@ package com.agroSoSProyect.Controllers;
 import com.agroSoSProyect.Exception.Device.DeviceNotFoundException;
 import com.agroSoSProyect.Models.Device;
 import com.agroSoSProyect.Repository.DeviceRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// Controlador que nos devuelve el device o devices
+// Puedes buscar por device que le pertenecen a un usuario en concreto
 @RestController
 @CrossOrigin("http://localhost:5173")
 public class DeviceController {
@@ -36,6 +39,8 @@ public class DeviceController {
     return deviceRepository.save(newDevice);
   }
 
+  // Realmente es necesario un update de un "device"
+  // Es literalmente un objeto existente físico
   @PutMapping("/api/device/{id}")
   Device updateDevice(@RequestBody Device newDevice, @PathVariable Long id) {
     return deviceRepository.findById(id)
