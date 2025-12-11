@@ -1,24 +1,102 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Header } from "../components/Header";
 import { CButton } from "@coreui/react";
 import { currentSensors, sensorHistory } from "../data/farmbotData";
-import { plantsData } from "../data/plantsData";
+import { PlantForm } from "../components/PlantForm";
+import {
+  getAllPlants,
+  createPlant,
+  updatePlant,
+  deletePlant,
+} from "../services/plant.services";
 
 function FarmBot() {
   const [lastUpdate, setLastUpdate] = useState(new Date().toLocaleTimeString());
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedPlant, setSelectedPlant] = useState(null);
+  const [plants, setPlants] = useState([]);
 
+  // Modal control
+  const [showForm, setShowForm] = useState(false);
+  const [formMode, setFormMode] = useState("create");
+
+  // Fetch all plants on mount
+  useEffect(() => {
+    fetchPlants();
+  }, []);
+
+  const fetchPlants = async () => {
+    try {
+      const data = await getAllPlants();
+      setPlants(data);
+    } catch (err) {
+      console.error("Error fetching plants:", err);
+    }
+  };
+
+  // Sensors update
   const handleUpdateSensors = () => {
     setLastUpdate(new Date().toLocaleTimeString());
     setSelectedDate(null);
   };
 
-  const handleSelectPlant = (id_plant) => {
-    setSelectedPlant(id_plant);
+  const displaySensors = selectedDate ? selectedDate.sensors : currentSensors;
+
+  // Form submit handler (Create / Edit)
+  const handleFormSubmit = async (formData) => {
+    try {
+      if (formMode === "create") {
+        const plantToCreate = {
+          name: formData.name,
+          x: formData.x,
+          y: formData.y,
+          z: 0,
+          createdAt: new Date().toISOString().split(".")[0],
+        };
+
+        console.log("Creating plant:");
+        console.log(plantToCreate);
+
+        const created = await createPlant(plantToCreate);
+        console.log("Plant created:");
+        console.log(created);
+         
+        setPlants((prev) => [...prev, created]);
+      } else if (formMode === "edit") {
+        const plantToUpdate = {
+          id: formData.id,
+          name: formData.name,
+          x: formData.x,
+          y: formData.y,
+          z: 0,
+          createdAt: formData.createdAt,
+        };
+        const updated = await updatePlant(plantToUpdate);
+        setPlants((prev) =>
+          prev.map((p) => (p.id === updated.id ? updated : p))
+        );
+      }
+      setShowForm(false);
+      setSelectedPlant(null);
+    } catch (err) {
+      console.error("Error saving plant:", err);
+    }
   };
 
-  const displaySensors = selectedDate ? selectedDate.sensors : currentSensors;
+  // Delete plant
+  const handleDelete = async () => {
+    if (!selectedPlant) return;
+    const confirmDelete = window.confirm("¿Eliminar esta planta?");
+    if (!confirmDelete) return;
+
+    try {
+      await deletePlant(selectedPlant);
+      setPlants((prev) => prev.filter((p) => p.id !== selectedPlant));
+      setSelectedPlant(null);
+    } catch (err) {
+      console.error("Error deleting plant:", err);
+    }
+  };
 
   return (
     <>
@@ -32,11 +110,45 @@ function FarmBot() {
             width: "100%",
           }}
         >
-          {/* Tabla de plantas */}
+          {/* PLANTS TABLE */}
           <div style={{ width: "25vw" }}>
-            <h1 style={{ fontSize: "2rem", fontWeight: "bold" }}>
+            {/* CRUD BUTTONS */}
+            <h1 style={{ fontSize: "2rem", fontWeight: "bold", textAlign: "center" }}>
               FarmBot Plants
             </h1>
+            <div style={{ display: "flex", gap: ".5rem", marginBottom: "1rem",justifyContent: "center" }}>
+              <CButton
+                color="success"
+                onClick={() => {
+                  setFormMode("create");
+                  setShowForm(true);
+                }}
+              >
+                Create
+              </CButton>
+
+              <CButton
+                color="warning"
+                disabled={!selectedPlant}
+                onClick={() => {
+                  setFormMode("edit");
+                  setShowForm(true);
+                }}
+              >
+                Edit
+              </CButton>
+
+              <CButton
+                color="danger"
+                disabled={!selectedPlant}
+                onClick={handleDelete}
+              >
+                Delete
+              </CButton>
+            </div>
+
+            
+
             <table
               style={{
                 width: "100%",
@@ -53,47 +165,33 @@ function FarmBot() {
                     borderBottom: "2px solid #ccc",
                   }}
                 >
-                  <th style={{ padding: "0.75rem", textAlign: "left" }}>
-                    Planta
-                  </th>
-                  <th style={{ padding: "0.75rem", textAlign: "left" }}>
-                    Días
-                  </th>
+                  <th style={{ padding: "0.75rem", textAlign: "left" }}>Planta</th>
+                  <th style={{ padding: "0.75rem", textAlign: "left" }}>Días</th>
                   <th style={{ padding: "0.75rem", textAlign: "left" }}>X</th>
                   <th style={{ padding: "0.75rem", textAlign: "left" }}>Y</th>
-                  <th style={{ padding: "0.75rem", textAlign: "center" }}>
-                    Select
-                  </th>
+                  <th style={{ padding: "0.75rem", textAlign: "center" }}>Select</th>
                 </tr>
               </thead>
 
               <tbody>
-                {plantsData.map((plant) => {
-                  // Calcular días sembrados
+                {plants.map((plant) => {
                   const daysPlanted = Math.floor(
-                    (new Date() - new Date(plant.created_at)) /
-                      (1000 * 60 * 60 * 24)
+                    (new Date() - new Date(plant.createdAt)) / (1000 * 60 * 60 * 24)
                   );
 
                   return (
-                    <tr
-                      key={plant.plant_id}
-                      style={{ borderBottom: "1px solid #eee" }}
-                    >
+                    <tr key={plant.id} style={{ borderBottom: "1px solid #eee" }}>
                       <td style={{ padding: "0.75rem" }}>{plant.name}</td>
                       <td style={{ padding: "0.75rem" }}>{daysPlanted}</td>
-                      <td style={{ padding: "0.75rem" }}>{plant.pos_x}</td>
-                      <td style={{ padding: "0.75rem" }}>{plant.pos_y}</td>
-
+                      <td style={{ padding: "0.75rem" }}>{plant.x}</td>
+                      <td style={{ padding: "0.75rem" }}>{plant.y}</td>
                       <td style={{ padding: "0.75rem", textAlign: "center" }}>
                         <input
                           type="checkbox"
-                          checked={selectedPlant === plant.plant_id}
+                          checked={selectedPlant === plant.id}
                           onChange={() =>
                             setSelectedPlant(
-                              selectedPlant === plant.plant_id
-                                ? null
-                                : plant.plant_id
+                              selectedPlant === plant.id ? null : plant.id
                             )
                           }
                         />
@@ -105,7 +203,7 @@ function FarmBot() {
             </table>
           </div>
 
-          {/* Sensores */}
+          {/* SENSORS */}
           <div style={{ width: "50vw", height: "34vw" }}>
             <h1
               style={{
@@ -116,6 +214,7 @@ function FarmBot() {
             >
               Control Sensores
             </h1>
+
             <div
               style={{
                 display: "flex",
@@ -186,7 +285,7 @@ function FarmBot() {
             </div>
           </div>
 
-          {/* Historial */}
+          {/* HISTORY */}
           <div style={{ width: "25vw", position: "relative" }}>
             <h3
               style={{
@@ -211,10 +310,7 @@ function FarmBot() {
             >
               {selectedDate && (
                 <div style={{ textAlign: "center", marginBottom: "0.75rem" }}>
-                  <CButton
-                    color="warning"
-                    onClick={() => setSelectedDate(null)}
-                  >
+                  <CButton color="warning" onClick={() => setSelectedDate(null)}>
                     Volver a Actual
                   </CButton>
                 </div>
@@ -246,6 +342,17 @@ function FarmBot() {
           </div>
         </div>
       </div>
+
+      {/* PLANT FORM MODAL */}
+      {showForm && (
+        <PlantForm
+          mode={formMode}
+          plantData={plants.find((p) => p.id === selectedPlant)}
+          plants={plants}
+          onClose={() => setShowForm(false)}
+          onSubmit={handleFormSubmit}
+        />
+      )}
     </>
   );
 }

@@ -39,7 +39,7 @@ function Tractor() {
 
             {/* Grid de sensores */}
             <div
-              style={{
+              style={{  
                 display: "grid",
                 gridTemplateColumns: "repeat(3, 1fr)",
                 gap: "1.5rem",
