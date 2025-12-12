@@ -8,6 +8,7 @@ export const PlantForm = ({ mode, plantData, plants, onClose, onSubmit }) => {
     name: "",
     x: "",
     y: "",
+    z: 0,
     createdAt: "",
   });
 
@@ -15,9 +16,11 @@ export const PlantForm = ({ mode, plantData, plants, onClose, onSubmit }) => {
     if (isEdit && plantData) {
       // Fill form with existing plant data
       setForm({
+        id: plantData.id,
         name: plantData.name,
         x: plantData.x,
         y: plantData.y,
+        z: 0,
         createdAt: plantData.createdAt,
       });
     } else if (!isEdit) {
@@ -26,6 +29,7 @@ export const PlantForm = ({ mode, plantData, plants, onClose, onSubmit }) => {
         name: "",
         x: "",
         y: "",
+        z: 0,
         createdAt: new Date().toISOString().split(".")[0], // ISO format
       });
     }

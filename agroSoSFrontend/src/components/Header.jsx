@@ -6,9 +6,9 @@ import { useAuth } from "../hook/auth/AuthContext";
 export const Header = () => {
   const { user } = useAuth();
 
-  let link = "/home"
+  let link = "";
   if (user) {
-    user.role === "ADMIN" ? link = "/adminDashBoard/:id" : link = "/user/:id"
+    user.role === "ADMIN" ? link = "/adminDashBoard/:id" : link = "/home"
   }
 
   return (
