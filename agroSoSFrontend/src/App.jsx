@@ -20,21 +20,21 @@ import './App.css'
 
 function App() {
   return (<>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Login/>}/>
-          <Route path='/*' element={<Login/>}/>
-          <Route path='/home' element={<Home/>}/>
-          <Route path='/adminDashBoard/:id' element={<Admin/>}/>
-          <Route path='/user/:id' element={<User/>}/>
-          <Route path="/user/edit/:id" element={<ModifyUser/>}/>
-          <Route path='/login' element={<Login/>}/>
-          <Route path='/signIn' element={<CreateUser/>}/>
-          <Route path='/farmbot' element={<FarmBot/>}/>
-          <Route path='/tractor' element={<Tractor/>}/>
-        </Routes>
-      </BrowserRouter>
-    <Footer/>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Login />} />
+        <Route path='/*' element={<Login />} />
+        <Route path='/home' element={<Home />} />
+        <Route path='/adminDashBoard/:id' element={<Admin />} />
+        <Route path='/user/:id' element={<User />} />
+        <Route path="/user/edit/:id" element={<ModifyUser />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/signIn' element={<CreateUser />} />
+        <Route path='/farmbot' element={<FarmBot />} />
+        <Route path='/tractor' element={<Tractor />} />
+      </Routes>
+    </BrowserRouter>
+    <Footer />
   </>);
 }
 

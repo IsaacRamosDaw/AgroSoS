@@ -1,0 +1,114 @@
+DOCUMENTACIÓN DEL BACKEND: CONTROLADORES, REPOSITORIOS Y EXCEPCIONES
+=====================================================================
+
+Esta sección detalla cómo interactúa el backend con el mundo exterior (Controladores), cómo accede a los datos (Repositorios) y cómo gestiona los errores (Excepciones).
+
+1. CONTROLADORES (CONTROLLERS)
+------------------------------
+Los controladores REST son los encargados de recibir las peticiones HTTP desde el frontend o cualquier cliente externo. Actúan como intermediarios entre la vista y la lógica de negocio/datos. Todos están configurados para permitir peticiones desde "http://localhost:5173" (CORS).
+
+a) AuthController (Autenticación y Gestión de Roles)
+   Este es el controlador principal para la seguridad y gestión de usuarios. A diferencia de un CRUD estándar, maneja lógica de negocio específica.
+   - login (Iniciar sesión): POST `/auth/login`
+     Verifica credenciales (email/password). Si son correctas, devuelve el usuario y sus dispositivos asociados.
+   - register (Registrar usuario): POST `/auth/register`
+     Registra nuevos usuarios. Hashea la contraseña antes de guardarla para seguridad.
+   - promoteToAdmin (Promover a admin): POST `/auth/promote`
+     Permite a un administrador promocionar a otro usuario al rol de ADMIN.
+   - revokeAdmin (Revocar admin): POST `/auth/revoke`
+     Permite a un administrador revocar el rol de ADMIN a otro usuario.
+   - updateUser (Actualizar usuario): PUT `/auth/update/{id}`
+     Permite a un usuario actualizar sus propios datos (nombre, email, contraseña).
+
+b) UserController (Gestión Administrativa de Usuarios)
+   Este controlador está diseñado para operaciones de administración sobre los usuarios.
+   - getAllUsers (Listar todos): GET `/api/allUser`
+   - getUserById (Obtener por ID): GET `/api/user/{id}`
+   - newUser (Crear usuario): POST `/api/user`
+   - updateUser (Actualizar usuario admin): PUT `/api/user/{id}`
+   - deleteUser (Eliminar usuario): DELETE `/api/user/{id}`
+
+c) DeviceController (Dispositivos)
+   Gestiona los dispositivos (FarmBots o Tractores).
+   - getAllDevices (Listar todos): GET `/api/device`
+   - getDeviceById (Obtener por ID): GET `/api/device/{id}`
+   - getDevicesByUser (Obtener por Usuario): GET `/api/device/user/{userId}`
+   - newDevice (Crear dispositivo): POST `/api/device`
+   - updateDevice (Actualizar dispositivo): PUT `/api/device/{id}`
+   - deleteDevice (Eliminar dispositivo): DELETE `/api/device/{id}`
+
+d) SensorController (Sensores)
+   Controla la información de los sensores físicos conectados a los dispositivos.
+   - getAllSensors (Listar todos): GET `/api/allSensor`
+   - getSensorById (Obtener por ID): GET `/api/sensor/{id}`
+   - getSensorByDeviceId (Obtener por Dispositivo): GET `/api/sensor/device/{id}`
+   - newSensor (Crear sensor): POST `/api/sensor`
+   - updateSensor (Actualizar sensor): PUT `/api/sensor/{id}`
+   - deleteSensor (Eliminar sensor): DELETE `/api/sensor/{id}`
+
+e) ReadingController (Lecturas)
+   Es el encargado de gestionar los datos históricos o lecturas de los sensores.
+   - getAllReadings (Listar todas): GET `/api/reading/`
+   - getReadingById (Obtener por ID): GET `/api/reading/{id}`
+   - getReadingByPlantId (Filtrar por Planta): GET `/api/reading/plant/{plantId}`
+   - getReadingBySensorId (Filtrar por Sensor): GET `/api/reading/sensor/{sensorId}`
+   - getReadingByDeviceId (Filtrar por Dispositivo): GET `/api/reading/device/{deviceId}`
+   - newReading (Nueva lectura): POST `/api/reading`
+   - deleteReading (Eliminar lectura): DELETE `/api/reading/{id}`
+
+f) PlantController (Plantas/Cultivos)
+   Gestiona el inventario de plantas o cultivos.
+   - getAllPlants (Listar todas): GET `/api/plant`
+   - getPlantById (Obtener por ID): GET `/api/plant/{id}`
+   - newPlant (Crear planta): POST `/api/plant`
+   - updatePlant (Actualizar planta): PUT `/api/plant/{id}`
+   - deletePlant (Eliminar planta): DELETE `/api/plant/{id}`
+
+g) AccessController (Accesos)
+   Maneja la tabla intermedia de permisos.
+   - getAllAccess (Listar todos): GET `/api/access`
+   - getAccessById (Obtener por ID): GET `/api/access/{id}`
+   - getAccessByUserId (Obtener por Usuario): GET `/api/access/user/{userId}`
+   - newAccess (Crear acceso): POST `/api/access`
+   - deleteAccess (Eliminar acceso): DELETE `/api/access/{id}`
+
+
+2. REPOSITORIOS (REPOSITORIES)
+------------------------------
+La capa de persistencia utiliza Spring Data JPA. Todos los repositorios extienden de `JpaRepository`, lo que nos proporciona automáticamente métodos para guardar (`save`), buscar todos (`findAll`), buscar por ID (`findById`) y eliminar (`deleteById`) sin necesidad de escribir SQL manual.
+
+Además de los métodos estándar, hemos definido consultas derivadas específicas:
+
+- UserRepository:
+  * `findByEmail(String email)`: Fundamental para el login, permite buscar usuarios por su correo electrónico.
+
+- DeviceRepository, AccessRepository:
+  * `findByUser(Long userId)`: Permite recuperar todos los objetos asociados a un usuario específico.
+
+- ReadingRepository:
+  * `findByPlant(Long plantId)`
+  * `findBySensor(Long sensorId)`
+  * `findByDevice(Long deviceId)`
+  * Estas consultas permiten filtrar el gran volumen de lecturas por su origen.
+
+- SensorRepository:
+  * `findByDevice(Long deviceId)`: Recupera todos los sensores instalados en un dispositivo concreto.
+
+
+3. EXCEPCIONES (EXCEPTIONS)
+---------------------------
+Para mantener un código limpio y ofrecer respuestas HTTP coherentes (como códigos 404 Not Found), hemos implementado un sistema de manejo de excepciones personalizado.
+
+Estructura por Entidad (User, Device, Plant, etc.):
+Cada entidad tiene su propio paquete de excepciones (ej. `com.agroSoSProyect.Exception.User`) que contiene dos componentes clave:
+
+a) La Excepción (ej. UserNotFoundException)
+   - Es una clase simple que extiende de `RuntimeException`.
+   - Se lanza desde el controlador cuando intentamos buscar un recurso que no existe (ej. usuario con ID 999).
+
+b) El Advice (ej. UserNotFoundAdvice)
+   - Utiliza la anotación `@ControllerAdvice` y `@ResponseBody`.
+   - Su función es "escuchar" cuando se lanza la excepción correspondiente.
+   - Cuando captura la excepción, intercepta la respuesta y devuelve un mensaje de error amigable (cadena de texto) junto con el código de estado HTTP 404 (Not Found).
+   
+   Esto asegura que el cliente (frontend) reciba un error claro y controlado en lugar de una traza de error genérica del servidor (Error 500).
