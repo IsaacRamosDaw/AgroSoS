@@ -40,6 +40,7 @@ export function AuthProvider({ children }) {
       // Llama al servicio de login en user.service
       const data = await loginUser(email, password);
 
+      // El device está separado de la variable user por lo que se añade manualmente
       const user = data.user;
       user.device = data.device;
 
@@ -51,18 +52,7 @@ export function AuthProvider({ children }) {
       throw error;
     }
   }
-
-  // Comprueba si el usuario es admin
-  function isAdmin() {
-    return user && user.role === "ADMIN";
-  }
-
-  // Logout, elimina la clave del localStorage
-  function logout() {
-    setUser(null);
-    localStorage.removeItem("auth:user");
-  }
-
+  
   // Permite actualizar campos del usuario
   function updateUser(updatedFields) {
     setUser((prev) => {
@@ -71,6 +61,12 @@ export function AuthProvider({ children }) {
       return merged;
     });
   }
+
+  // Comprueba si el usuario es admin
+  function isAdmin() { return user && user.role === "ADMIN"; }
+
+  // Logout, elimina la clave del localStorage
+  function logout() { setUser(null); localStorage.removeItem("auth:user"); }
 
   // Valor que se pasa al contexto para que los componentes puedan acceder a las funciones
   const value = { user, loading, login, logout, updateUser, isAdmin };
