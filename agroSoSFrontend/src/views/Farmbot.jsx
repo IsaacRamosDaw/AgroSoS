@@ -365,7 +365,7 @@ function FarmBot() {
           </div>
 
           {/* SENSORS */}
-          <div style={{ width: "50vw", height: "34vw" }}>
+          <div style={{ width: "50vw" }}>
             <h1
               style={{
                 textAlign: "center",
