@@ -8,6 +8,7 @@ import { CButton, CContainer, CTable, CTableBody, CTableDataCell, CTableHead, CT
 
 function Admin() {
   const [users, setUsers] = useState([]);
+  const [userToDelete, setUserToDelete] = useState(null);
   const { user: currentUser, updateUser } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
@@ -56,10 +57,10 @@ function Admin() {
     }
   };
 
-  const handleDelete = async (targetUserId) => {
-    if (!window.confirm("¿Estás seguro de que quieres eliminar este usuario?")) return;
+  const confirmDelete = async () => {
     try {
-      await deleteUser(targetUserId);
+      await deleteUser(userToDelete);
+      setUserToDelete(null);
       fetchUsers();
       showToast("Usuario eliminado correctamente", "success");
     } catch (error) {
@@ -70,19 +71,42 @@ function Admin() {
   return (
     <div style={{ backgroundColor: "#f4f6f9", minHeight: "100vh" }}>
       <Header />
+
+      {/* DELETE USER CONFIRMATION MODAL */}
+      {userToDelete && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh",
+          backgroundColor: "rgba(0,0,0,0.5)",
+          display: "flex", justifyContent: "center", alignItems: "center", zIndex: 999,
+        }}>
+          <div style={{
+            backgroundColor: "#fff", padding: "2rem", borderRadius: "10px",
+            minWidth: "300px", textAlign: "center",
+          }}>
+            <h3 style={{ marginBottom: "0.5rem" }}>¿Eliminar este usuario?</h3>
+            <p style={{ color: "#666", margin: "0.5rem 0 1.5rem" }}>
+              Esta acción no se puede deshacer.
+            </p>
+            <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
+              <CButton color="secondary" onClick={() => setUserToDelete(null)}>Cancelar</CButton>
+              <CButton color="danger" onClick={confirmDelete}>Eliminar</CButton>
+            </div>
+          </div>
+        </div>
+      )}
       <CContainer className="py-5">
-        <h1 className="mb-4 text-center" style={{ color: "#2c3e50", fontWeight: "bold" }}>Admin Dashboard</h1>
-        
+        <h1 className="mb-4 text-center" style={{ color: "#2c3e50", fontWeight: "bold" }}>Panel de Administración</h1>
+
         <div className="bg-white p-4 rounded shadow-sm">
-            <h3 className="mb-4" style={{borderBottom: "2px solid #f0f0f0", paddingBottom: "1rem"}}>User Management</h3>
+            <h3 className="mb-4" style={{borderBottom: "2px solid #f0f0f0", paddingBottom: "1rem"}}>Gestión de Usuarios</h3>
             <CTable hover responsive>
             <CTableHead>
                 <CTableRow>
                 <CTableHeaderCell>ID</CTableHeaderCell>
-                <CTableHeaderCell>Name</CTableHeaderCell>
+                <CTableHeaderCell>Nombre</CTableHeaderCell>
                 <CTableHeaderCell>Email</CTableHeaderCell>
-                <CTableHeaderCell>Role</CTableHeaderCell>
-                <CTableHeaderCell>Actions</CTableHeaderCell>
+                <CTableHeaderCell>Rol</CTableHeaderCell>
+                <CTableHeaderCell>Acciones</CTableHeaderCell>
                 </CTableRow>
             </CTableHead>
             <CTableBody>
@@ -100,16 +124,16 @@ function Admin() {
                     <div className="d-flex gap-2">
                         {user.role !== 'ADMIN' && (
                         <CButton color="warning" size="sm" onClick={() => handlePromote(user.id)} style={{color: "white"}}>
-                            Promote
+                            Promover
                         </CButton>
                         )}
                         {user.role === 'ADMIN' && (
                         <CButton color="secondary" size="sm" onClick={() => handleRevoke(user.id)}>
-                            Revoke
+                            Revocar
                         </CButton>
                         )}
-                        <CButton color="danger" size="sm" onClick={() => handleDelete(user.id)} style={{color: "white"}}>
-                        Delete
+                        <CButton color="danger" size="sm" onClick={() => setUserToDelete(user.id)} style={{color: "white"}}>
+                        Eliminar
                         </CButton>
                     </div>
                     </CTableDataCell>

@@ -1,12 +1,12 @@
 const getUnit = (label) => {
   const l = label.toLowerCase();
-  if (l.includes('temp'))                          return '°C';
-  if (l.includes('humid'))                         return '%';
-  if (l.includes('soil') || l.includes('moisture')) return '%';
-  if (l.includes('ph'))                            return 'pH';
-  if (l.includes('rpm'))                           return 'RPM';
-  if (l.includes('fuel'))                          return 'L';
-  if (l.includes('battery') || l.includes('voltage')) return 'V';
+  if (l.includes('suelo') || l.includes('soil') || l.includes('moisture')) return '%';
+  if (l.includes('temp'))                                                   return '°C';
+  if (l.includes('humid') || l.includes('humed'))                           return '%';
+  if (l.includes('ph'))                                                     return 'pH';
+  if (l.includes('rpm'))                                                    return 'RPM';
+  if (l.includes('fuel') || l.includes('combustible'))                      return 'L';
+  if (l.includes('battery') || l.includes('voltage') || l.includes('voltaje')) return 'V';
   return '';
 };
 

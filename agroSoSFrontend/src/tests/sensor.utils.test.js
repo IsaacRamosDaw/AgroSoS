@@ -4,9 +4,9 @@ import { buildCurrentSensors, buildHistory } from '../utils/sensor.utils'
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
 const sensors = [
-  { id: 1, label: 'Temperature' },
-  { id: 2, label: 'Humidity' },
-  { id: 3, label: 'Soil Moisture' },
+  { id: 1, label: 'Temperatura' },
+  { id: 2, label: 'Humedad' },
+  { id: 3, label: 'Humedad Suelo' },
 ]
 
 const makeReading = (sensorId, value, createdAt) => ({ sensor: sensorId, pin: sensorId, value, createdAt })
@@ -41,7 +41,7 @@ describe('buildCurrentSensors', () => {
   it('mapea correctamente name, value y unit para cada sensor', () => {
     const readings = [makeReading(1, '21.5', '2024-01-01T10:00:00')]
     const result = buildCurrentSensors([sensors[0]], readings)
-    expect(result[0]).toEqual({ name: 'Temperature', value: '21.5', unit: '°C' })
+    expect(result[0]).toEqual({ name: 'Temperatura', value: '21.5', unit: '°C' })
   })
 
   it('asigna unidades correctas según la etiqueta del sensor', () => {
@@ -107,7 +107,7 @@ describe('buildHistory', () => {
   it('usa el label del sensor cuando está disponible', () => {
     const readings = [makeReading(1, '21', '2024-01-01T10:00:00')]
     const result = buildHistory(sensors, readings)
-    expect(result[0].sensors[0].name).toBe('Temperature')
+    expect(result[0].sensors[0].name).toBe('Temperatura')
   })
 
   it('usa "Pin {n}" como fallback cuando el sensor no existe en la lista', () => {

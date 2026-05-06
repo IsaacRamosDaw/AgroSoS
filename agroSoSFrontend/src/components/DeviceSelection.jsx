@@ -36,7 +36,7 @@ function DeviceSelection() {
   return (
     <div style={{backgroundColor: "#f9f9f9"}}>
       <h2 style={{ textAlign: "center", fontSize: "2.5rem", fontWeight: "800", marginBottom: "4rem", color: "#2c3e50", letterSpacing: "-1px" }}>
-        Select Your Device
+        Selecciona tu dispositivo
       </h2>
 
       <CContainer className="d-flex justify-content-center align-items-stretch" style={{ gap: "4rem", flexWrap: "wrap" }}>
@@ -66,12 +66,12 @@ function DeviceSelection() {
               <img src={farmbotIcon} alt="FARMBOT" style={{ width: "120px", height: "120px", objectFit: "contain" }} />
             </div>
             <span style={{ fontSize: "1.5rem", fontWeight: "700", color: "#2c3e50" }}>FarmBOT</span>
-            <span style={{ color: "#7f8c8d", marginTop: "0.5rem" }}>Automated Farming</span>
+            <span style={{ color: "#7f8c8d", marginTop: "0.5rem" }}>Agricultura automatizada</span>
           </Link>
           
           <div style={{ width: "100%", borderTop: "2px dashed #f0f0f0", paddingTop: "1.5rem" }}>
             <h3 style={{ fontSize: "1.1rem", fontWeight: "600", color: "#95a5a6", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "1rem", textAlign: "center" }}>
-              Available Units
+              Unidades disponibles
             </h3>
             <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "0.8rem" }}>
               {farmBots.length > 0 ? farmBots.map(device => (
@@ -101,7 +101,7 @@ function DeviceSelection() {
                   </Link>
                 </li>
               )) : (
-                <li style={{ textAlign: "center", color: "#bdc3c7", fontStyle: "italic" }}>No FarmBots found</li>
+                <li style={{ textAlign: "center", color: "#bdc3c7", fontStyle: "italic" }}>No se encontraron FarmBots</li>
               )}
             </ul>
           </div>
@@ -134,12 +134,12 @@ function DeviceSelection() {
               <img src={tractorIcon} alt="Tractor" style={{ width: "120px", height: "120px", objectFit: "contain" }} />
             </div>
             <span style={{ fontSize: "1.5rem", fontWeight: "700", color: "#2c3e50" }}>Tractor</span>
-            <span style={{ color: "#7f8c8d", marginTop: "0.5rem" }}>Heavy Machinery</span>
+            <span style={{ color: "#7f8c8d", marginTop: "0.5rem" }}>Maquinaria pesada</span>
           </Link>
           
           <div style={{ width: "100%", borderTop: "2px dashed #f0f0f0", paddingTop: "1.5rem" }}>
             <h3 style={{ fontSize: "1.1rem", fontWeight: "600", color: "#95a5a6", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "1rem", textAlign: "center" }}>
-              Available Units
+              Unidades disponibles
             </h3>
             <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "0.8rem" }}>
               {tractors.length > 0 ? tractors.map(device => (
@@ -169,7 +169,7 @@ function DeviceSelection() {
                   </Link>
                 </li>
               )) : (
-                <li style={{ textAlign: "center", color: "#bdc3c7", fontStyle: "italic" }}>No Tractors found</li>
+                <li style={{ textAlign: "center", color: "#bdc3c7", fontStyle: "italic" }}>No se encontraron tractores</li>
               )}
             </ul>
           </div>

@@ -42,12 +42,12 @@ export const PlantForm = ({ mode, plantData, onClose, onSubmit }) => {
     }}>
       <div style={{ backgroundColor: "#fff", padding: "2rem", borderRadius: "10px", minWidth: "350px", maxWidth: "500px" }}>
         <h2 style={{ marginBottom: "1rem", textAlign: "center" }}>
-          {isEdit ? "Edit Plant" : "Create Plant"}
+          {isEdit ? "Editar Planta" : "Crear Planta"}
         </h2>
 
         <CForm onSubmit={handleSubmit} noValidate>
           <div className="mb-3">
-            <CFormLabel>Name</CFormLabel>
+            <CFormLabel>Nombre</CFormLabel>
             <CFormInput
               type="text"
               name="name"
@@ -84,8 +84,8 @@ export const PlantForm = ({ mode, plantData, onClose, onSubmit }) => {
           </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", marginTop: "1rem" }}>
-            <CButton color="secondary" type="button" onClick={onClose}>Cancel</CButton>
-            <CButton color="primary" type="submit">{isEdit ? "Save Changes" : "Create"}</CButton>
+            <CButton color="secondary" type="button" onClick={onClose}>Cancelar</CButton>
+            <CButton color="primary" type="submit">{isEdit ? "Guardar Cambios" : "Crear"}</CButton>
           </div>
         </CForm>
       </div>

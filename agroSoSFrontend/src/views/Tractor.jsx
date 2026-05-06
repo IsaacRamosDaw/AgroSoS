@@ -25,6 +25,7 @@ function Tractor() {
   const [noDevice, setNoDevice] = useState(false);
   const [noSensors, setNoSensors] = useState(false);
   const [generatorRunning, setGeneratorRunning] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   const displaySensors = selectedDate ? selectedDate.sensors : sensors;
 
@@ -84,9 +85,13 @@ function Tractor() {
     }
   };
 
-  const handleClearData = async () => {
+  const handleClearData = () => {
     if (!deviceId) return;
-    if (!window.confirm("¿Eliminar todas las lecturas de este dispositivo?")) return;
+    setShowClearConfirm(true);
+  };
+
+  const confirmClearData = async () => {
+    setShowClearConfirm(false);
     try {
       await clearReadings(deviceId);
       setSensors([]);
@@ -186,10 +191,34 @@ function Tractor() {
   return (
     <>
       <Header />
+
+      {/* CLEAR DATA CONFIRMATION MODAL */}
+      {showClearConfirm && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh",
+          backgroundColor: "rgba(0,0,0,0.5)",
+          display: "flex", justifyContent: "center", alignItems: "center", zIndex: 999,
+        }}>
+          <div style={{
+            backgroundColor: "#fff", padding: "2rem", borderRadius: "10px",
+            minWidth: "300px", textAlign: "center",
+          }}>
+            <h3 style={{ marginBottom: "0.5rem" }}>¿Eliminar todas las lecturas?</h3>
+            <p style={{ color: "#666", margin: "0.5rem 0 1.5rem" }}>
+              Esta acción no se puede deshacer.
+            </p>
+            <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
+              <CButton color="secondary" onClick={() => setShowClearConfirm(false)}>Cancelar</CButton>
+              <CButton color="danger" onClick={confirmClearData}>Eliminar</CButton>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div style={{ padding: "2rem" }}>
         <div style={{ display: "flex", gap: "2rem", justifyContent: "space-between", width: "100%" }}>
           <div style={{ width: "75vw" }}>
-            <h1 style={{ textAlign: "center", fontSize: "2rem", fontWeight: "bold" }}>Tractor Sensors</h1>
+            <h1 style={{ textAlign: "center", fontSize: "2rem", fontWeight: "bold" }}>Sensores del Tractor</h1>
             <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.5rem", justifyContent: "center", flexWrap: "wrap" }}>
               <span>
                 <strong>Última act.:</strong> {selectedDate ? `${selectedDate.date} ${selectedDate.time}` : lastUpdate}
@@ -208,7 +237,7 @@ function Tractor() {
                 color={generatorRunning ? "danger" : "success"}
                 onClick={handleToggleGenerator}
               >
-                {generatorRunning ? "Disable Sensor" : "Enable Sensor"}
+                {generatorRunning ? "Desactivar Sensor" : "Activar Sensor"}
               </CButton>
               <span style={{
                 padding: "0.25rem 0.75rem",

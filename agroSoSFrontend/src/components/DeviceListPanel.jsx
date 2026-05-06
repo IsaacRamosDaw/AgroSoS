@@ -16,6 +16,7 @@ export function DeviceListPanel({ type, accentColor, icon, basePath }) {
   const [formMode, setFormMode] = useState('create');
   const [selectedDevice, setSelectedDevice] = useState(null);
   const [formName, setFormName] = useState('');
+  const [deviceToDelete, setDeviceToDelete] = useState(null);
 
   useEffect(() => {
     if (user) fetchDevices();
@@ -67,12 +68,12 @@ export function DeviceListPanel({ type, accentColor, icon, basePath }) {
     }
   };
 
-  const handleDelete = async (device) => {
-    if (!window.confirm(`¿Eliminar "${device.name}"?`)) return;
+  const confirmDelete = async () => {
     try {
-      await deleteDevice(device.id);
-      setDevices(prev => prev.filter(d => d.id !== device.id));
-      showToast(`"${device.name}" eliminado`, 'success');
+      await deleteDevice(deviceToDelete.id);
+      setDevices(prev => prev.filter(d => d.id !== deviceToDelete.id));
+      showToast(`"${deviceToDelete.name}" eliminado`, 'success');
+      setDeviceToDelete(null);
     } catch {
       showToast('Error al eliminar el dispositivo', 'error');
     }
@@ -85,17 +86,17 @@ export function DeviceListPanel({ type, accentColor, icon, basePath }) {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem', justifyContent: 'center' }}>
         <img src={icon} alt={type} style={{ width: '56px', height: '56px', objectFit: 'contain' }} />
-        <h1 style={{ fontSize: '2rem', fontWeight: 'bold', margin: 0 }}>{type} Units</h1>
+        <h1 style={{ fontSize: '2rem', fontWeight: 'bold', margin: 0 }}>Unidades {type}</h1>
       </div>
 
       <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
-        <CButton color="success" onClick={openCreate}>+ New {type}</CButton>
+        <CButton color="success" onClick={openCreate}>+ Nuevo {type}</CButton>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         {devices.length === 0 ? (
           <p style={{ textAlign: 'center', color: '#aaa', fontStyle: 'italic', padding: '2rem 0' }}>
-            No {type} units found
+            No se encontraron unidades de {type}
           </p>
         ) : devices.map(device => (
           <div
@@ -114,15 +115,38 @@ export function DeviceListPanel({ type, accentColor, icon, basePath }) {
             </Link>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               <CButton color="warning" size="sm" style={{ color: '#fff' }} onClick={() => openEdit(device)}>
-                Edit
+                Editar
               </CButton>
-              <CButton color="danger" size="sm" onClick={() => handleDelete(device)}>
-                Delete
+              <CButton color="danger" size="sm" onClick={() => setDeviceToDelete(device)}>
+                Eliminar
               </CButton>
             </div>
           </div>
         ))}
       </div>
+
+      {/* DELETE DEVICE CONFIRMATION MODAL */}
+      {deviceToDelete && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000,
+        }}>
+          <div style={{
+            backgroundColor: '#fff', padding: '2rem', borderRadius: '12px',
+            minWidth: '300px', textAlign: 'center',
+          }}>
+            <h3 style={{ marginBottom: '0.5rem' }}>¿Eliminar "{deviceToDelete.name}"?</h3>
+            <p style={{ color: '#666', margin: '0.5rem 0 1.5rem' }}>
+              Esta acción no se puede deshacer.
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+              <CButton color="secondary" onClick={() => setDeviceToDelete(null)}>Cancelar</CButton>
+              <CButton color="danger" onClick={confirmDelete}>Eliminar</CButton>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showForm && (
         <div style={{
@@ -135,11 +159,11 @@ export function DeviceListPanel({ type, accentColor, icon, basePath }) {
             minWidth: '320px', display: 'flex', flexDirection: 'column', gap: '1rem',
           }}>
             <h2 style={{ margin: 0, fontSize: '1.5rem' }}>
-              {formMode === 'create' ? `New ${type}` : `Edit ${type}`}
+              {formMode === 'create' ? `Nuevo ${type}` : `Editar ${type}`}
             </h2>
             <input
               type="text"
-              placeholder="Device name"
+              placeholder="Nombre del dispositivo"
               value={formName}
               onChange={e => setFormName(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSubmit()}
@@ -150,9 +174,9 @@ export function DeviceListPanel({ type, accentColor, icon, basePath }) {
               }}
             />
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <CButton color="secondary" onClick={() => setShowForm(false)}>Cancel</CButton>
+              <CButton color="secondary" onClick={() => setShowForm(false)}>Cancelar</CButton>
               <CButton color="primary" onClick={handleSubmit}>
-                {formMode === 'create' ? 'Create' : 'Save'}
+                {formMode === 'create' ? 'Crear' : 'Guardar'}
               </CButton>
             </div>
           </div>

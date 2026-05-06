@@ -27,17 +27,17 @@ public class DataGeneratorService {
     public boolean isRunning() { return running; }
 
     private static final String[][] FARMBOT_SENSORS = {
-        {"1", "Temperature", "1"},
-        {"2", "Humidity", "1"},
-        {"3", "Soil Moisture", "1"},
-        {"4", "pH Level", "1"}
+        {"1", "Temperatura", "1"},
+        {"2", "Humedad", "1"},
+        {"3", "Humedad Suelo", "1"},
+        {"4", "pH", "1"}
     };
 
     private static final String[][] TRACTOR_SENSORS = {
-        {"1", "Engine Temp", "1"},
+        {"1", "Temp. Motor", "1"},
         {"2", "RPM", "1"},
-        {"3", "Fuel Level", "1"},
-        {"4", "Battery Voltage", "1"}
+        {"3", "Combustible", "1"},
+        {"4", "Voltaje Batería", "1"}
     };
 
     public String seedForUser(Long userId) {
@@ -113,13 +113,13 @@ public class DataGeneratorService {
     private String generateValue(String label) {
         ThreadLocalRandom r = ThreadLocalRandom.current();
         String l = label.toLowerCase();
+        if (l.contains("suelo") || l.contains("soil") || l.contains("moisture")) return String.format("%.1f", r.nextDouble(20, 80));
         if (l.contains("temp"))    return String.format("%.1f", r.nextDouble(15, 45));
-        if (l.contains("humid"))   return String.format("%.1f", r.nextDouble(30, 90));
-        if (l.contains("soil") || l.contains("moisture")) return String.format("%.1f", r.nextDouble(20, 80));
+        if (l.contains("humid") || l.contains("humed")) return String.format("%.1f", r.nextDouble(30, 90));
         if (l.contains("ph"))      return String.format("%.1f", r.nextDouble(5.5, 8.0));
         if (l.contains("rpm"))     return String.valueOf(r.nextInt(600, 3000));
-        if (l.contains("fuel"))    return String.format("%.1f", r.nextDouble(10, 100));
-        if (l.contains("battery") || l.contains("voltage")) return String.format("%.1f", r.nextDouble(11.5, 14.5));
+        if (l.contains("fuel") || l.contains("combustible")) return String.format("%.1f", r.nextDouble(10, 100));
+        if (l.contains("battery") || l.contains("voltage") || l.contains("voltaje")) return String.format("%.1f", r.nextDouble(11.5, 14.5));
         return String.format("%.1f", r.nextDouble(0, 100));
     }
 }

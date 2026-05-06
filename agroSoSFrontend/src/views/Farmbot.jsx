@@ -32,6 +32,7 @@ function FarmBot() {
   const [noSensors, setNoSensors] = useState(false);
   const [generatorRunning, setGeneratorRunning] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -89,9 +90,13 @@ function FarmBot() {
     }
   };
 
-  const handleClearData = async () => {
+  const handleClearData = () => {
     if (!deviceId) return;
-    if (!window.confirm("¿Eliminar todas las lecturas de este dispositivo?")) return;
+    setShowClearConfirm(true);
+  };
+
+  const confirmClearData = async () => {
+    setShowClearConfirm(false);
     try {
       await clearReadings(deviceId);
       setSensors([]);
@@ -269,7 +274,7 @@ function FarmBot() {
           <div style={{ width: "25vw" }}>
             {/* CRUD BUTTONS */}
             <h1 style={{ fontSize: "2rem", fontWeight: "bold", textAlign: "center" }}>
-              FarmBot Plants
+              Plantas FarmBot
             </h1>
             <div style={{ display: "flex", gap: ".5rem", marginBottom: "1rem",justifyContent: "center" }}>
               <CButton
@@ -279,7 +284,7 @@ function FarmBot() {
                   setShowForm(true);
                 }}
               >
-                Create
+                Crear
               </CButton>
 
               <CButton
@@ -290,7 +295,7 @@ function FarmBot() {
                   setShowForm(true);
                 }}
               >
-                Edit
+                Editar
               </CButton>
 
               <CButton
@@ -298,7 +303,7 @@ function FarmBot() {
                 disabled={!selectedPlant}
                 onClick={handleDelete}
               >
-                Delete
+                Eliminar
               </CButton>
             </div>
 
@@ -325,7 +330,7 @@ function FarmBot() {
                   <th style={{ padding: "0.75rem" }}>Días</th>
                   <th style={{ padding: "0.75rem" }}>X</th>
                   <th style={{ padding: "0.75rem" }}>Y</th>
-                  <th style={{ padding: "0.75rem" }}>Select</th>
+                  <th style={{ padding: "0.75rem" }}>Sel.</th>
                 </tr>
               </thead>
 
@@ -398,7 +403,7 @@ function FarmBot() {
                 color={generatorRunning ? "danger" : "success"}
                 onClick={handleToggleGenerator}
               >
-                {generatorRunning ? "Disable Sensor" : "Enable Sensor"}
+                {generatorRunning ? "Desactivar Sensor" : "Activar Sensor"}
               </CButton>
               <span style={{
                 padding: "0.25rem 0.75rem",
@@ -516,6 +521,29 @@ function FarmBot() {
           </div>
         </div>
       </div>
+
+      {/* CLEAR DATA CONFIRMATION MODAL */}
+      {showClearConfirm && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh",
+          backgroundColor: "rgba(0,0,0,0.5)",
+          display: "flex", justifyContent: "center", alignItems: "center", zIndex: 999,
+        }}>
+          <div style={{
+            backgroundColor: "#fff", padding: "2rem", borderRadius: "10px",
+            minWidth: "300px", textAlign: "center",
+          }}>
+            <h3 style={{ marginBottom: "0.5rem" }}>¿Eliminar todas las lecturas?</h3>
+            <p style={{ color: "#666", margin: "0.5rem 0 1.5rem" }}>
+              Esta acción no se puede deshacer.
+            </p>
+            <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
+              <CButton color="secondary" onClick={() => setShowClearConfirm(false)}>Cancelar</CButton>
+              <CButton color="danger" onClick={confirmClearData}>Eliminar</CButton>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* DELETE CONFIRMATION MODAL */}
       {showDeleteConfirm && (
