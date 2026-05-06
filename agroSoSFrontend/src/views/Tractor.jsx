@@ -6,8 +6,8 @@ import { Loader } from "../components/Loader";
 import { getSensorsByDeviceId } from "../services/sensor.services";
 import { getReadingsByDeviceId } from "../services/reading.services";
 import { getDevicesByUser } from "../services/device.services";
-import { useAuth } from "../hook/auth/AuthContext";
-import { useToast } from "../hook/toast/ToastContext";
+import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 import { buildCurrentSensors, buildHistory } from "../utils/sensor.utils";
 import { seedGenerator, startGenerator, stopGenerator, getGeneratorStatus, triggerReading, clearReadings, initDeviceSensors } from "../services/generator.services";
 

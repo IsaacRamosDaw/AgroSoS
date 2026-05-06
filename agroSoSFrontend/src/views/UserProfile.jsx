@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../hook/auth/AuthContext'
-import { useToast } from '../hook/toast/ToastContext'
+import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 import { Header } from '../components/Header'
 import { CCard, CCardBody, CCardTitle, CCardText, CButton, CRow, CCol, CAvatar, CContainer, CBadge } from '@coreui/react'
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CButton } from '@coreui/react';
-import { useAuth } from '../hook/auth/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { Loader } from './Loader';
 import { Header } from './Header';
 

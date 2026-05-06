@@ -1,11 +1,12 @@
 import { CContainer } from "@coreui/react";
 import { Link } from "react-router-dom";
+import '../views/style/home.css';
 import { useEffect, useState } from "react";
 import farmbotIcon from "../assets/img/farmbot_icon.png";
 import tractorIcon from "../assets/img/tractor_icon.png";
 import { getDevicesByUser } from "../services/device.services";
-import { useAuth } from "../hook/auth/AuthContext";
-import { useToast } from "../hook/toast/ToastContext";
+import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 import { Loader } from "./Loader";
 
 function DeviceSelection() {
@@ -106,8 +107,7 @@ function DeviceSelection() {
           </div>
         </div>
 
-        {/* Divider for Desktop */}
-         <div style={{ width: "2px", backgroundColor: "#f0f0f0", borderRadius: "2px" }} className="d-none d-md-block"></div>
+        <div className="device-divider"></div>
 
         {/* Tractor Section */}
         <div style={{ 

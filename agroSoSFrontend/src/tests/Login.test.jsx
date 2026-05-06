@@ -8,11 +8,11 @@ import Login from '../views/Login'
 const mockLogin = vi.fn()
 const mockShowToast = vi.fn()
 
-vi.mock('../hook/auth/AuthContext', () => ({
-  useAuth: () => ({ user: null, login: mockLogin }),
+vi.mock('../context/AuthContext', () => ({
+  useAuth: () => ({ user: null, login: mockLogin, isAdmin: () => false }),
 }))
 
-vi.mock('../hook/toast/ToastContext', () => ({
+vi.mock('../context/ToastContext', () => ({
   useToast: () => ({ showToast: mockShowToast }),
 }))
 

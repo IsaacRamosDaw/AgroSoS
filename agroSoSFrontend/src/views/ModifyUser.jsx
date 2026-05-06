@@ -1,7 +1,7 @@
 import { ModifyForm } from '../components/ModifyForm'
 import { Header } from '../components/Header'
 import { CContainer } from '@coreui/react'
-import { useAuth } from '../hook/auth/AuthContext'
+import { useAuth } from '../context/AuthContext'
 
 export function ModifyUser() {
   const { user: authUser } = useAuth()

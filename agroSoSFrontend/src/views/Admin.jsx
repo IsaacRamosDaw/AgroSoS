@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '../components/Header';
 import { getAllUsers, promoteUser, revokeUser, deleteUser } from '../services/user.services';
-import { useAuth } from '../hook/auth/AuthContext';
-import { useToast } from '../hook/toast/ToastContext';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { CButton, CContainer, CTable, CTableBody, CTableDataCell, CTableHead, CTableHeaderCell, CTableRow } from '@coreui/react';
 
 function Admin() {

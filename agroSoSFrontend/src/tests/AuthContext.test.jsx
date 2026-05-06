@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
-import { AuthProvider, useAuth } from '../hook/auth/AuthContext'
+import { AuthProvider, useAuth } from '../context/AuthContext'
 
 // ─── Nivel 3: Tests de Integración ────────────────────────────────────────────
 

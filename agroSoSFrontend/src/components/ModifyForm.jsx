@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { updateUser as updateUserService } from '../services/user.services'
-import { useAuth } from '../hook/auth/AuthContext'
-import { useToast } from '../hook/toast/ToastContext'
+import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 import { validateModifyForm } from '../utils/validation.utils'
 import {
   CForm,

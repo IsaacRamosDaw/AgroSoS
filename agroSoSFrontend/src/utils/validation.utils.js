@@ -32,6 +32,19 @@ export const validateLoginForm = (email, password) => {
   return { isValid: true, error: null };
 };
 
+// Valida el formulario de plantas (PlantForm)
+export const validatePlantForm = ({ name, x, y }) => {
+  if (!name || name.trim() === '') { return { isValid: false, field: 'name', error: 'El nombre de la planta no puede estar vacío.' }; }
+
+  if (x === '' || x === null || x === undefined) { return { isValid: false, field: 'x', error: 'La coordenada X es obligatoria.' }; }
+  if (isNaN(Number(x))) { return { isValid: false, field: 'x', error: 'La coordenada X debe ser un número.' }; }
+
+  if (y === '' || y === null || y === undefined) { return { isValid: false, field: 'y', error: 'La coordenada Y es obligatoria.' }; }
+  if (isNaN(Number(y))) { return { isValid: false, field: 'y', error: 'La coordenada Y debe ser un número.' }; }
+
+  return { isValid: true, field: null, error: null };
+};
+
 // Valida el formulario de edición de usuario (ModifyForm)
 export const validateModifyForm = ({ name, email, password, confirmPassword }) => {
   if (!name || name.trim() === '') { return { isValid: false, field: 'name', error: 'Debes ingresar un nombre.' }; }

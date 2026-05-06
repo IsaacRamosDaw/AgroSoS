@@ -8,8 +8,8 @@ import { getPlantsByDeviceId, createPlant, updatePlant, deletePlant } from "../s
 import { getSensorsByDeviceId } from "../services/sensor.services";
 import { getReadingsByDeviceId } from "../services/reading.services";
 import { getDevicesByUser } from "../services/device.services";
-import { useAuth } from "../hook/auth/AuthContext";
-import { useToast } from "../hook/toast/ToastContext";
+import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 import { buildCurrentSensors, buildHistory } from "../utils/sensor.utils";
 import { seedGenerator, startGenerator, stopGenerator, getGeneratorStatus, triggerReading, clearReadings, initDeviceSensors } from "../services/generator.services";
 
@@ -31,6 +31,7 @@ function FarmBot() {
   const [noDevice, setNoDevice] = useState(false);
   const [noSensors, setNoSensors] = useState(false);
   const [generatorRunning, setGeneratorRunning] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -203,12 +204,13 @@ function FarmBot() {
     }
   };
 
-  // Delete plant
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!selectedPlant) return;
-    const confirmDelete = window.confirm("¿Eliminar esta planta?");
-    if (!confirmDelete) return;
+    setShowDeleteConfirm(true);
+  };
 
+  const confirmDeletePlant = async () => {
+    setShowDeleteConfirm(false);
     try {
       await deletePlant(selectedPlant);
       setPlants((prev) => prev.filter((p) => p.id !== selectedPlant));
@@ -309,6 +311,7 @@ function FarmBot() {
                 borderRadius: "10px",
                 overflow: "hidden",
                 border: "5px solid #000",
+                textAlign: "center",
               }}
             >
               <thead>
@@ -318,11 +321,11 @@ function FarmBot() {
                     borderBottom: "2px solid #ccc",
                   }}
                 >
-                  <th style={{ padding: "0.75rem", textAlign: "left" }}>Planta</th>
-                  <th style={{ padding: "0.75rem", textAlign: "left" }}>Días</th>
-                  <th style={{ padding: "0.75rem", textAlign: "left" }}>X</th>
-                  <th style={{ padding: "0.75rem", textAlign: "left" }}>Y</th>
-                  <th style={{ padding: "0.75rem", textAlign: "center" }}>Select</th>
+                  <th style={{ padding: "0.75rem" }}>Planta</th>
+                  <th style={{ padding: "0.75rem" }}>Días</th>
+                  <th style={{ padding: "0.75rem" }}>X</th>
+                  <th style={{ padding: "0.75rem" }}>Y</th>
+                  <th style={{ padding: "0.75rem" }}>Select</th>
                 </tr>
               </thead>
 
@@ -338,7 +341,7 @@ function FarmBot() {
                       <td style={{ padding: "0.75rem" }}>{daysPlanted}</td>
                       <td style={{ padding: "0.75rem" }}>{plant.x}</td>
                       <td style={{ padding: "0.75rem" }}>{plant.y}</td>
-                      <td style={{ padding: "0.75rem", textAlign: "center" }}>
+                      <td style={{ padding: "0.75rem" }}>
                         <input
                           type="checkbox"
                           checked={selectedPlant === plant.id}
@@ -513,6 +516,29 @@ function FarmBot() {
           </div>
         </div>
       </div>
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {showDeleteConfirm && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh",
+          backgroundColor: "rgba(0,0,0,0.5)",
+          display: "flex", justifyContent: "center", alignItems: "center", zIndex: 999,
+        }}>
+          <div style={{
+            backgroundColor: "#fff", padding: "2rem", borderRadius: "10px",
+            minWidth: "300px", textAlign: "center",
+          }}>
+            <h3 style={{ marginBottom: "0.5rem" }}>¿Eliminar esta planta?</h3>
+            <p style={{ color: "#666", margin: "0.5rem 0 1.5rem" }}>
+              Esta acción no se puede deshacer.
+            </p>
+            <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
+              <CButton color="secondary" onClick={() => setShowDeleteConfirm(false)}>Cancelar</CButton>
+              <CButton color="danger" onClick={confirmDeletePlant}>Eliminar</CButton>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* PLANT FORM MODAL */}
       {showForm && (

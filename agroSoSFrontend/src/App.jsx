@@ -19,7 +19,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { AdminRoute } from './components/AdminRoute';
 
 // Context
-import { ToastProvider } from './hook/toast/ToastContext';
+import { ToastProvider } from './context/ToastContext';
 
 // CSS
 import 'bootstrap/dist/css/bootstrap.min.css'

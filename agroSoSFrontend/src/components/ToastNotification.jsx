@@ -1,5 +1,5 @@
 import { CToaster, CToast, CToastBody, CToastClose } from '@coreui/react';
-import { useToast } from '../hook/toast/ToastContext';
+import { useToast } from '../context/ToastContext';
 
 const COLOR_MAP = {
   success: "success",

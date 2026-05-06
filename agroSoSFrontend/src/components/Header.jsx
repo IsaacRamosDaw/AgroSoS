@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { CHeader, CContainer, CButton, CAvatar } from "@coreui/react";
-import { useAuth } from "../hook/auth/AuthContext";
+import { useAuth } from "../context/AuthContext";
 
 export const Header = () => {
   const { user, isAdmin } = useAuth();

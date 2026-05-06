@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { useAuth } from '../hook/auth/AuthContext'
-import { useToast } from '../hook/toast/ToastContext'
+import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 import { createUser } from '../services/user.services'
 import { validateSignUpForm } from '../utils/validation.utils'
 

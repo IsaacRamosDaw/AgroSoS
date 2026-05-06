@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { isValidEmail, validateLoginForm, validateSignUpForm } from '../utils/validation.utils'
+import { isValidEmail, validateLoginForm, validateSignUpForm, validatePlantForm, validateModifyForm } from '../utils/validation.utils'
 
 // ─── Nivel 1: Tests Parametrizados ────────────────────────────────────────────
 
@@ -60,5 +60,49 @@ describe('validateSignUpForm', () => {
   ])('%s → isValid: %s', (_desc, overrides, expected) => {
     const formData = { ...base, ...overrides }
     expect(validateSignUpForm(formData).isValid).toBe(expected)
+  })
+})
+
+describe('validatePlantForm', () => {
+  const base = { name: 'Tomato', x: '10', y: '20' }
+
+  it.each([
+    // [descripcion,                          overrides,                  isValid, field?]
+    ['formulario válido',                     {},                         true,    null  ],
+    ['nombre vacío',                          { name: '' },               false,   'name'],
+    ['nombre solo espacios',                  { name: '   ' },            false,   'name'],
+    ['x vacío',                               { x: '' },                  false,   'x'   ],
+    ['x no numérico',                         { x: 'abc' },               false,   'x'   ],
+    ['y vacío',                               { y: '' },                  false,   'y'   ],
+    ['y no numérico',                         { y: 'abc' },               false,   'y'   ],
+    ['x negativo (válido)',                   { x: '-5' },                true,    null  ],
+    ['x decimal (válido)',                    { x: '3.14' },              true,    null  ],
+  ])('%s → isValid: %s', (_desc, overrides, expectedValid, expectedField) => {
+    const formData = { ...base, ...overrides }
+    const result = validatePlantForm(formData)
+    expect(result.isValid).toBe(expectedValid)
+    if (expectedField) expect(result.field).toBe(expectedField)
+  })
+})
+
+describe('validateModifyForm', () => {
+  const base = { name: 'Test User', email: 'test@test.com', password: '', confirmPassword: '' }
+
+  it.each([
+    // [descripcion,                          overrides,                                        isValid, field?]
+    ['nombre y email válidos, sin contraseña', {},                                              true,    null            ],
+    ['nombre, email y contraseña válidos',     { password: 'abc123', confirmPassword: 'abc123' }, true, null            ],
+    ['nombre vacío',                          { name: '' },                                     false,   'name'          ],
+    ['nombre solo espacios',                  { name: '   ' },                                  false,   'name'          ],
+    ['email inválido',                        { email: 'noemail' },                             false,   'email'         ],
+    ['email vacío',                           { email: '' },                                    false,   'email'         ],
+    ['contraseña muy corta',                  { password: 'abc', confirmPassword: 'abc' },      false,   'password'      ],
+    ['contraseñas no coinciden',              { password: 'abc123', confirmPassword: 'xyz789' }, false,  'confirmPassword'],
+    ['contraseña larga sin confirmación',     { password: 'abc123', confirmPassword: '' },       false,  'confirmPassword'],
+  ])('%s → isValid: %s', (_desc, overrides, expectedValid, expectedField) => {
+    const formData = { ...base, ...overrides }
+    const result = validateModifyForm(formData)
+    expect(result.isValid).toBe(expectedValid)
+    if (expectedField) expect(result.field).toBe(expectedField)
   })
 })

@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CButton } from '@coreui/react';
 import { getDevicesByUser, createDevice, updateDevice, deleteDevice } from '../services/device.services';
-import { useAuth } from '../hook/auth/AuthContext';
-import { useToast } from '../hook/toast/ToastContext';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { Loader } from './Loader';
 
 export function DeviceListPanel({ type, accentColor, icon, basePath }) {
