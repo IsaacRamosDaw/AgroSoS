@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 
 import { useAuth } from "../hook/auth/AuthContext";
+import { useToast } from "../hook/toast/ToastContext";
 import { validateLoginForm } from "../utils/validation.utils";
 import {
   CButton,
@@ -20,6 +21,7 @@ import {
 function Login() {
   // Trae la variable user y la funcion login del contexto
   const { user, login } = useAuth();
+  const { showToast } = useToast();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -43,10 +45,12 @@ function Login() {
     setLoading(true);
 
     try {
-      // Al hacer esto se setea el user en el contexto y se guarda en el local storage
-      await login(email, password);
+      const loggedUser = await login(email, password);
+      showToast(`¡Bienvenido, ${loggedUser.name}!`, "success");
     } catch (err) {
-      setError(err.message || "No se pudo iniciar sesión ha habido un error inesperado");
+      const msg = err.message || "No se pudo iniciar sesión. Inténtalo de nuevo.";
+      setError(msg);
+      showToast(msg, "error");
     } finally {
       setLoading(false);
     }

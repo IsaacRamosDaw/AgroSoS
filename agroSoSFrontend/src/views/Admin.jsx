@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Header } from '../components/Header';
 import { getAllUsers, promoteUser, revokeUser, deleteUser } from '../services/user.services';
 import { useAuth } from '../hook/auth/AuthContext';
+import { useToast } from '../hook/toast/ToastContext';
 import { CButton, CContainer, CTable, CTableBody, CTableDataCell, CTableHead, CTableHeaderCell, CTableRow } from '@coreui/react';
 
 function Admin() {
   const [users, setUsers] = useState([]);
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, updateUser } = useAuth();
+  const { showToast } = useToast();
+  const navigate = useNavigate();
 
   const fetchUsers = async () => {
     try {
       const data = await getAllUsers();
       setUsers(data);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      showToast("Error al cargar usuarios", "error");
     }
   };
 
@@ -25,9 +29,13 @@ function Admin() {
     if (!currentUser) return;
     try {
       await promoteUser(currentUser.id, targetUserId);
+      if (targetUserId === currentUser.id) {
+        updateUser({ role: 'ADMIN' });
+      }
       fetchUsers();
+      showToast("Usuario promovido a ADMIN correctamente", "success");
     } catch (error) {
-      console.error("Error promoting user:", error);
+      showToast("Error al promover usuario", "error");
     }
   };
 
@@ -35,19 +43,27 @@ function Admin() {
     if (!currentUser) return;
     try {
       await revokeUser(currentUser.id, targetUserId);
+      if (targetUserId === currentUser.id) {
+        updateUser({ role: 'USER' });
+        showToast("Has perdido los permisos de administrador", "info");
+        navigate('/home');
+        return;
+      }
       fetchUsers();
+      showToast("Permisos de ADMIN revocados correctamente", "success");
     } catch (error) {
-      console.error("Error revoking user:", error);
+      showToast("Error al revocar permisos", "error");
     }
   };
 
   const handleDelete = async (targetUserId) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    if (!window.confirm("¿Estás seguro de que quieres eliminar este usuario?")) return;
     try {
       await deleteUser(targetUserId);
       fetchUsers();
+      showToast("Usuario eliminado correctamente", "success");
     } catch (error) {
-      console.error("Error deleting user:", error);
+      showToast("Error al eliminar usuario", "error");
     }
   };
 

@@ -9,9 +9,17 @@ import ModifyUser from './views/ModifyUser';
 import Home from './views/Home';
 import Tractor from './views/Tractor';
 import FarmBot from './views/FarmBot';
+import FarmBotList from './views/FarmBotList';
+import TractorList from './views/TractorList';
 
 // Components
 import { Footer } from './components/Footer';
+import { ToastNotification } from './components/ToastNotification';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { AdminRoute } from './components/AdminRoute';
+
+// Context
+import { ToastProvider } from './hook/toast/ToastContext';
 
 // CSS
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -19,23 +27,33 @@ import '@coreui/coreui/dist/css/coreui.min.css'
 import './App.css'
 
 function App() {
-  return (<>
+  return (
+    <ToastProvider>
     <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Login />} />
-        <Route path='/*' element={<Login />} />
-        <Route path='/home' element={<Home />} />
-        <Route path='/adminDashBoard/:id' element={<Admin />} />
-        <Route path='/user/:id' element={<UserProfile />} />
-        <Route path="/user/edit/:id" element={<ModifyUser />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/signIn' element={<SignUp />} />
-        <Route path='/farmbot' element={<FarmBot />} />
-        <Route path='/tractor' element={<Tractor />} />
-      </Routes>
+      <div className="app-layout">
+        <div className="app-content">
+          <Routes>
+            <Route path='/' element={<Login />} />
+            <Route path='/*' element={<Login />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/signIn' element={<SignUp />} />
+
+            <Route path='/home' element={<ProtectedRoute><Home /></ProtectedRoute>} />
+            <Route path='/adminDashBoard/:id' element={<AdminRoute><Admin /></AdminRoute>} />
+            <Route path='/user/:id' element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+            <Route path='/user/edit/:id' element={<ProtectedRoute><ModifyUser /></ProtectedRoute>} />
+            <Route path='/farmbot' element={<ProtectedRoute><FarmBotList /></ProtectedRoute>} />
+            <Route path='/farmbot/:deviceId' element={<ProtectedRoute><FarmBot /></ProtectedRoute>} />
+            <Route path='/tractor' element={<ProtectedRoute><TractorList /></ProtectedRoute>} />
+            <Route path='/tractor/:deviceId' element={<ProtectedRoute><Tractor /></ProtectedRoute>} />
+          </Routes>
+        </div>
+        <Footer />
+      </div>
+      <ToastNotification />
     </BrowserRouter>
-    <Footer />
-  </>);
+    </ToastProvider>
+  );
 }
 
 export default App

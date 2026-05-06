@@ -3,24 +3,35 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import farmbotIcon from "../assets/img/farmbot_icon.png";
 import tractorIcon from "../assets/img/tractor_icon.png";
-import { getAllDevices } from "../services/device.services";
+import { getDevicesByUser } from "../services/device.services";
+import { useAuth } from "../hook/auth/AuthContext";
+import { useToast } from "../hook/toast/ToastContext";
+import { Loader } from "./Loader";
 
 function DeviceSelection() {
   const [farmBots, setFarmBots] = useState([]);
   const [tractors, setTractors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const { showToast } = useToast();
 
   useEffect(() => {
+    if (!user) return;
     const fetchDevices = async () => {
       try {
-        const devices = await getAllDevices();
+        const devices = await getDevicesByUser(user.id);
         setFarmBots(devices.filter(device => device.type === 'FarmBot'));
         setTractors(devices.filter(device => device.type === 'Tractor'));
       } catch (error) {
-        console.error("Error fetching devices:", error);
+        showToast("Error al cargar los dispositivos", "error");
+      } finally {
+        setLoading(false);
       }
     };
     fetchDevices();
-  }, []);
+  }, [user]);
+
+  if (loading) return <Loader message="Cargando dispositivos..." />;
   return (
     <div style={{backgroundColor: "#f9f9f9"}}>
       <h2 style={{ textAlign: "center", fontSize: "2.5rem", fontWeight: "800", marginBottom: "4rem", color: "#2c3e50", letterSpacing: "-1px" }}>

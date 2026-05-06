@@ -17,12 +17,21 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Recoge los datos del usuario del localStorage y establece la variable user
-  // Si no hay user porque no se ha registrado o logeado todavía este será null
+  // Recoge los datos del usuario del localStorage y refresca el rol desde el backend
+  // para detectar cambios de rol hechos por un admin mientras la sesión estaba activa
   useEffect(() => {
     const localData = localStorage.getItem("auth:user");
-    if (localData) { setUser(JSON.parse(localData)); }
-    setLoading(false);
+    if (!localData) {
+      setLoading(false);
+      return;
+    }
+    const cached = JSON.parse(localData);
+    setUser(cached);
+    fetch(`http://localhost:8080/api/user/${cached.id}`)
+      .then(r => r.json())
+      .then(fresh => setUser(prev => prev ? { ...prev, role: fresh.role } : prev))
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   // En el momento que haya un registro o login, la variable user es modificado, activando este useEffect

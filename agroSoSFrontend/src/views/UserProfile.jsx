@@ -1,14 +1,19 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hook/auth/AuthContext'
+import { useToast } from '../hook/toast/ToastContext'
 import { Header } from '../components/Header'
 import { CCard, CCardBody, CCardTitle, CCardText, CButton, CRow, CCol, CAvatar, CContainer, CBadge } from '@coreui/react'
 
 export function User() {
   const { user, logout, loading } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
-  // Si el usuario decide cerrar sesión
-  const handleLogout = () => { logout(); navigate(`/user/login`); };
+  const handleLogout = () => {
+    showToast('Sesión cerrada correctamente', 'info');
+    logout();
+    navigate('/login');
+  };
 
   // En lo que carga los datos del usuario se devuelve un mensaje de cargando un usuario
   if (loading) { return <div>Cargando usuario...</div>; }

@@ -23,8 +23,6 @@ export const createUser = async (user) => {
 }
 
 export const updateUser = async (user) => {
-    console.log("user in updateUser")
-    console.log(user)
     const response = await fetch(`http://localhost:8080/auth/update/${user.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },

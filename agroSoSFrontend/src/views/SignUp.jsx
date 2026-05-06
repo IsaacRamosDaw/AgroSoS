@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../hook/auth/AuthContext'
+import { useToast } from '../hook/toast/ToastContext'
 import { createUser } from '../services/user.services'
 import { validateSignUpForm } from '../utils/validation.utils'
 
@@ -23,6 +24,7 @@ import {
 function CreateUser() {
   const navigate = useNavigate()
   const { login } = useAuth();
+  const { showToast } = useToast();
 
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -51,17 +53,17 @@ function CreateUser() {
       return
     }
 
-    // Creación del usuario con el servicio de create en user.services
     try {
-      // Usuario con contraseña hasheada devuelto por el backend
       const createdUser = await createUser(userData)
       if (createdUser) {
+        showToast(`¡Bienvenido, ${createdUser.name}! Cuenta creada correctamente.`, "success")
         await login(userData.email, userData.password)
         navigate(`/user/${createdUser.id}`)
       }
     } catch (err) {
-      console.error(err)
-      setError('Error al crear el usuario. Inténtalo de nuevo.', err.message)
+      const msg = 'Error al crear el usuario. Inténtalo de nuevo.'
+      setError(msg)
+      showToast(msg, "error")
     }
   }
 

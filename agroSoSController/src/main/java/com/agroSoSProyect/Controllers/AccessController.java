@@ -28,12 +28,34 @@ public class AccessController {
 
   @GetMapping("/api/access/user/{userId}")
   List<Access> getAccessByUserId(@PathVariable Long userId) {
-    return accessRepository.findByUser(userId);
+    return accessRepository.findByUser_Id(userId);
+  }
+
+  @GetMapping("/api/access/device/{deviceId}")
+  List<Access> getAccessByDeviceId(@PathVariable Long deviceId) {
+    return accessRepository.findByDevice_Id(deviceId);
   }
 
   @PostMapping("/api/access")
   Access newAccess(@RequestBody Access newAccess) {
+    if (newAccess.getUser() == null || newAccess.getDevice() == null) {
+      throw new IllegalArgumentException("User and device must not be null");
+    }
     return accessRepository.save(newAccess);
+  }
+
+  @PutMapping("/api/access/{id}")
+  Access updateAccess(@RequestBody Access updated, @PathVariable Long id) {
+    if (updated.getUser() == null || updated.getDevice() == null) {
+      throw new IllegalArgumentException("User and device must not be null");
+    }
+    return accessRepository.findById(id)
+        .map(access -> {
+          access.setUser(updated.getUser());
+          access.setDevice(updated.getDevice());
+          return accessRepository.save(access);
+        })
+        .orElseThrow(() -> new AccessNotFoundException(id));
   }
 
   @DeleteMapping("/api/access/{id}")

@@ -34,6 +34,25 @@ public class AuthController {
 	@Autowired
 	private DeviceRepository deviceRepository;
 
+	@PostMapping("/bootstrap-admin")
+	public Map<String, Object> bootstrapAdmin(@RequestBody User adminData) {
+		boolean adminExists = userRepository.findAll().stream()
+				.anyMatch(u -> u.getRole() == com.agroSoSProyect.Models.Role.ADMIN);
+		if (adminExists) {
+			return Map.of("success", false, "message", "Ya existe un administrador en el sistema");
+		}
+		User existing = userRepository.findByEmail(adminData.getEmail());
+		if (existing != null) {
+			existing.setRole(com.agroSoSProyect.Models.Role.ADMIN);
+			userRepository.save(existing);
+			return Map.of("success", true, "message", "Usuario existente promovido a administrador");
+		}
+		adminData.setPassword(hashPassword(adminData.getPassword()));
+		adminData.setRole(com.agroSoSProyect.Models.Role.ADMIN);
+		User saved = userRepository.save(adminData);
+		return Map.of("success", true, "message", "Administrador creado correctamente", "user", saved);
+	}
+
 	@PostMapping("/login")
 	public Map<String, Object> login(@RequestBody User loginData) {
 		User user = userRepository.findByEmail(loginData.getEmail());

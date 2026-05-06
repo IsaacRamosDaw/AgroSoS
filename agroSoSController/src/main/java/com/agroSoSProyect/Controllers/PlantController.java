@@ -27,8 +27,16 @@ public class PlantController {
         .orElseThrow(() -> new PlantNotFoundException(id));
   }
 
+  @GetMapping("/api/plant/device/{deviceId}")
+  List<Plant> getPlantsByDevice(@PathVariable Long deviceId) {
+    return plantRepository.findByDeviceId(deviceId);
+  }
+
   @PostMapping("/api/plant")
   Plant newPlant(@RequestBody Plant newPlant) {
+    if (newPlant.getName() == null || newPlant.getName().isBlank()) {
+      throw new IllegalArgumentException("Plant name must not be empty");
+    }
     return plantRepository.save(newPlant);
   }
 
@@ -40,7 +48,9 @@ public class PlantController {
           plant.setX(newPlant.getX());
           plant.setY(newPlant.getY());
           plant.setZ(newPlant.getZ());
-          // CreatedAt and UpdatedAt are handled by @PrePersist and @PreUpdate in Model
+          if (newPlant.getDeviceId() != null) {
+            plant.setDeviceId(newPlant.getDeviceId());
+          }
           return plantRepository.save(plant);
         })
         .orElseThrow(() -> new PlantNotFoundException(id));

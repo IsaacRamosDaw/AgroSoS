@@ -1,46 +1,170 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Header } from "../components/Header";
 import { CButton } from "@coreui/react";
-import { currentSensors, sensorHistory } from "../data/farmbotData";
 import { PlantForm } from "../components/PlantForm";
-import {
-  getAllPlants,
-  createPlant,
-  updatePlant,
-  deletePlant,
-} from "../services/plant.services";
+import { Loader } from "../components/Loader";
+import { getPlantsByDeviceId, createPlant, updatePlant, deletePlant } from "../services/plant.services";
+import { getSensorsByDeviceId } from "../services/sensor.services";
+import { getReadingsByDeviceId } from "../services/reading.services";
+import { getDevicesByUser } from "../services/device.services";
+import { useAuth } from "../hook/auth/AuthContext";
+import { useToast } from "../hook/toast/ToastContext";
+import { buildCurrentSensors, buildHistory } from "../utils/sensor.utils";
+import { seedGenerator, startGenerator, stopGenerator, getGeneratorStatus, triggerReading, clearReadings, initDeviceSensors } from "../services/generator.services";
 
 function FarmBot() {
+  const { deviceId: deviceIdParam } = useParams();
+  const { user } = useAuth();
+  const { showToast } = useToast();
+
+  const [loading, setLoading] = useState(true);
+  const [deviceId, setDeviceId] = useState(null);
+  const [sensors, setSensors] = useState([]);
+  const [history, setHistory] = useState([]);
   const [lastUpdate, setLastUpdate] = useState(new Date().toLocaleTimeString());
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedPlant, setSelectedPlant] = useState(null);
   const [plants, setPlants] = useState([]);
-
-  // Modal control
   const [showForm, setShowForm] = useState(false);
   const [formMode, setFormMode] = useState("create");
+  const [noDevice, setNoDevice] = useState(false);
+  const [noSensors, setNoSensors] = useState(false);
+  const [generatorRunning, setGeneratorRunning] = useState(false);
 
-  // Fetch all plants on mount
   useEffect(() => {
-    fetchPlants();
-  }, []);
+    if (!user) return;
+    initDevice();
+  }, [user, deviceIdParam]);
 
-  const fetchPlants = async () => {
+  useEffect(() => {
+    if (!deviceId) return;
+    const interval = setInterval(() => fetchSensorData(deviceId), 30000);
+    return () => clearInterval(interval);
+  }, [deviceId]);
+
+  const fetchGeneratorStatus = async () => {
     try {
-      const data = await getAllPlants();
-      setPlants(data);
+      const status = await getGeneratorStatus();
+      setGeneratorRunning(status.running);
+    } catch {}
+  };
+
+  const initDevice = async () => {
+    try {
+      let farmId;
+      if (deviceIdParam) {
+        farmId = Number(deviceIdParam);
+      } else {
+        const devices = await getDevicesByUser(user.id);
+        const farmbot = devices.find(d => d.type === "FarmBot");
+        if (!farmbot) {
+          setNoDevice(true);
+          return;
+        }
+        farmId = farmbot.id;
+      }
+      setDeviceId(farmId);
+      await Promise.all([fetchSensorData(farmId), fetchPlants(farmId), fetchGeneratorStatus()]);
     } catch (err) {
-      console.error("Error fetching plants:", err);
+      showToast("Error al inicializar el dispositivo", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Sensors update
-  const handleUpdateSensors = () => {
-    setLastUpdate(new Date().toLocaleTimeString());
-    setSelectedDate(null);
+  const handleSeedData = async () => {
+    try {
+      setLoading(true);
+      await seedGenerator(user.id);
+      await startGenerator();
+      setGeneratorRunning(true);
+      setNoDevice(false);
+      showToast("Datos de demo creados y generador iniciado", "success");
+      await initDevice();
+    } catch (err) {
+      showToast("Error al inicializar datos de demo", "error");
+      setLoading(false);
+    }
   };
 
-  const displaySensors = selectedDate ? selectedDate.sensors : currentSensors;
+  const handleClearData = async () => {
+    if (!deviceId) return;
+    if (!window.confirm("¿Eliminar todas las lecturas de este dispositivo?")) return;
+    try {
+      await clearReadings(deviceId);
+      setSensors([]);
+      setHistory([]);
+      setSelectedDate(null);
+      showToast("Datos limpiados correctamente", "success");
+    } catch (err) {
+      showToast("Error al limpiar los datos", "error");
+    }
+  };
+
+  const handleToggleGenerator = async () => {
+    try {
+      if (generatorRunning) {
+        await stopGenerator();
+        setGeneratorRunning(false);
+        showToast("Sensor detenido", "info");
+      } else {
+        await startGenerator();
+        setGeneratorRunning(true);
+        showToast("Sensor iniciado", "success");
+      }
+    } catch (err) {
+      showToast("Error al cambiar estado del sensor", "error");
+    }
+  };
+
+  const fetchSensorData = async (devId) => {
+    const [sensorList, readingList] = await Promise.all([
+      getSensorsByDeviceId(devId),
+      getReadingsByDeviceId(devId),
+    ]);
+    if (!sensorList.length) {
+      setNoSensors(true);
+      return;
+    }
+    setNoSensors(false);
+    setSensors(buildCurrentSensors(sensorList, readingList));
+    setHistory(buildHistory(sensorList, readingList));
+    setLastUpdate(new Date().toLocaleTimeString());
+  };
+
+  const handleInitSensors = async () => {
+    try {
+      await initDeviceSensors(deviceId);
+      await fetchSensorData(deviceId);
+      showToast("Sensores inicializados correctamente", "success");
+    } catch {
+      showToast("Error al inicializar los sensores", "error");
+    }
+  };
+
+  const fetchPlants = async (devId) => {
+    try {
+      const data = await getPlantsByDeviceId(devId);
+      setPlants(data);
+    } catch (err) {
+      showToast("Error al cargar las plantas", "error");
+    }
+  };
+
+  const handleUpdateSensors = async () => {
+    if (!deviceId) return;
+    setSelectedDate(null);
+    try {
+      await triggerReading(deviceId);
+      await fetchSensorData(deviceId);
+      showToast("Sensores actualizados", "success");
+    } catch (err) {
+      showToast("Error al actualizar sensores", "error");
+    }
+  };
+
+  const displaySensors = selectedDate ? selectedDate.sensors : sensors;
 
   // Form submit handler (Create / Edit)
   const handleFormSubmit = async (formData) => {
@@ -51,17 +175,12 @@ function FarmBot() {
           x: formData.x,
           y: formData.y,
           z: 0,
+          deviceId: deviceId,
           createdAt: new Date().toISOString().split(".")[0],
         };
-
-        console.log("Creating plant:");
-        console.log(plantToCreate);
-
         const created = await createPlant(plantToCreate);
-        console.log("Plant created:");
-        console.log(created);
-         
         setPlants((prev) => [...prev, created]);
+        showToast(`Planta "${created.name}" creada correctamente`, "success");
       } else if (formMode === "edit") {
         const plantToUpdate = {
           id: formData.id,
@@ -75,11 +194,12 @@ function FarmBot() {
         setPlants((prev) =>
           prev.map((p) => (p.id === updated.id ? updated : p))
         );
+        showToast(`Planta "${updated.name}" actualizada correctamente`, "success");
       }
       setShowForm(false);
       setSelectedPlant(null);
     } catch (err) {
-      console.error("Error saving plant:", err);
+      showToast("Error al guardar la planta", "error");
     }
   };
 
@@ -93,10 +213,43 @@ function FarmBot() {
       await deletePlant(selectedPlant);
       setPlants((prev) => prev.filter((p) => p.id !== selectedPlant));
       setSelectedPlant(null);
+      showToast("Planta eliminada correctamente", "success");
     } catch (err) {
-      console.error("Error deleting plant:", err);
+      showToast("Error al eliminar la planta", "error");
     }
   };
+
+  if (loading) return <><Header /><Loader message="Cargando FarmBot..." /></>;
+
+  if (noSensors) return (
+    <>
+      <Header />
+      <div style={{ padding: "3rem", textAlign: "center" }}>
+        <h2 style={{ marginBottom: "1rem" }}>Este dispositivo no tiene sensores configurados</h2>
+        <p style={{ marginBottom: "1.5rem", color: "#666" }}>
+          Inicializa los sensores para empezar a recibir lecturas.
+        </p>
+        <CButton color="primary" size="lg" onClick={handleInitSensors}>
+          Inicializar Sensores
+        </CButton>
+      </div>
+    </>
+  );
+
+  if (noDevice) return (
+    <>
+      <Header />
+      <div style={{ padding: "3rem", textAlign: "center" }}>
+        <h2 style={{ marginBottom: "1rem" }}>No se encontró un FarmBot para este usuario</h2>
+        <p style={{ marginBottom: "1.5rem", color: "#666" }}>
+          Inicializa los datos de demo para empezar a simular lecturas de sensores.
+        </p>
+        <CButton color="success" size="lg" onClick={handleSeedData}>
+          Inicializar Datos Demo
+        </CButton>
+      </div>
+    </>
+  );
 
   return (
     <>
@@ -235,6 +388,24 @@ function FarmBot() {
               <CButton color="primary" onClick={handleUpdateSensors}>
                 Actualizar Sensores
               </CButton>
+              <CButton color="secondary" onClick={handleClearData}>
+                Limpiar Datos
+              </CButton>
+              <CButton
+                color={generatorRunning ? "danger" : "success"}
+                onClick={handleToggleGenerator}
+              >
+                {generatorRunning ? "Disable Sensor" : "Enable Sensor"}
+              </CButton>
+              <span style={{
+                padding: "0.25rem 0.75rem",
+                borderRadius: "12px",
+                backgroundColor: generatorRunning ? "#28a745" : "#6c757d",
+                color: "#fff",
+                fontSize: "0.85rem",
+              }}>
+                {generatorRunning ? "● Activo" : "● Inactivo"}
+              </span>
             </div>
 
             <div
@@ -316,7 +487,7 @@ function FarmBot() {
                 </div>
               )}
 
-              {sensorHistory.map((entry, index) => (
+              {history.map((entry, index) => (
                 <div
                   key={index}
                   onClick={() => setSelectedDate(entry)}

@@ -2,21 +2,28 @@ package com.agroSoSProyect.Controllers;
 
 import com.agroSoSProyect.Exception.Device.DeviceNotFoundException;
 import com.agroSoSProyect.Models.Device;
+import com.agroSoSProyect.Repository.AccessRepository;
 import com.agroSoSProyect.Repository.DeviceRepository;
+import com.agroSoSProyect.Repository.PlantRepository;
+import com.agroSoSProyect.Repository.ReadingRepository;
+import com.agroSoSProyect.Repository.SensorRepository;
+import com.agroSoSProyect.Services.DataGeneratorService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// Controlador que nos devuelve el device o devices
-// Puedes buscar por device que le pertenecen a un usuario en concreto
 @RestController
 @CrossOrigin("http://localhost:5173")
 public class DeviceController {
 
-  @Autowired
-  private DeviceRepository deviceRepository;
+  @Autowired private DeviceRepository deviceRepository;
+  @Autowired private DataGeneratorService dataGeneratorService;
+  @Autowired private SensorRepository sensorRepository;
+  @Autowired private ReadingRepository readingRepository;
+  @Autowired private PlantRepository plantRepository;
+  @Autowired private AccessRepository accessRepository;
 
   @GetMapping("/api/device")
   List<Device> getAllDevices() {
@@ -36,11 +43,24 @@ public class DeviceController {
 
   @PostMapping("/api/device")
   Device newDevice(@RequestBody Device newDevice) {
-    return deviceRepository.save(newDevice);
+    Device saved = deviceRepository.save(newDevice);
+    if (saved.getType() != null) {
+      dataGeneratorService.createDefaultSensorsForDevice(saved.getId(), saved.getType());
+    }
+    return saved;
   }
 
-  // Realmente es necesario un update de un "device"
-  // Es literalmente un objeto existente físico
+  @PostMapping("/api/device/{id}/init-sensors")
+  Device initSensors(@PathVariable Long id) {
+    Device device = deviceRepository.findById(id)
+        .orElseThrow(() -> new DeviceNotFoundException(id));
+    boolean hasSensors = !sensorRepository.findByDevice(id).isEmpty();
+    if (!hasSensors && device.getType() != null) {
+      dataGeneratorService.createDefaultSensorsForDevice(id, device.getType());
+    }
+    return device;
+  }
+
   @PutMapping("/api/device/{id}")
   Device updateDevice(@RequestBody Device newDevice, @PathVariable Long id) {
     return deviceRepository.findById(id)
@@ -57,6 +77,10 @@ public class DeviceController {
     if (!deviceRepository.existsById(id)) {
       throw new DeviceNotFoundException(id);
     }
+    readingRepository.deleteByDevice(id);
+    sensorRepository.deleteByDevice(id);
+    plantRepository.deleteByDeviceId(id);
+    accessRepository.deleteByDevice_Id(id);
     deviceRepository.deleteById(id);
     return "Device with id " + id + " has been deleted success.";
   }

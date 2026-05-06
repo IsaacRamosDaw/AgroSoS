@@ -4,6 +4,12 @@ export const getAllPlants = async () => {
   return data;
 }
 
+export const getPlantsByDeviceId = async (deviceId) => {
+  const response = await fetch(`http://localhost:8080/api/plant/device/${deviceId}`);
+  const data = await response.json();
+  return data;
+}
+
 export const getPlantById = async (id) => {
   const response = await fetch(`http://localhost:8080/api/plant/${id}`);
   const data = await response.json();

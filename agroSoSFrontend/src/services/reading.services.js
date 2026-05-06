@@ -22,6 +22,12 @@ export const getReadingBySensorId = async (sensorId) => {
   return data;
 }
 
+export const getReadingsByDeviceId = async (deviceId) => {
+  const response = await fetch(`http://localhost:8080/api/reading/device/${deviceId}`);
+  const data = await response.json();
+  return data;
+}
+
 export const createReading = async (reading) => {
   const response = await fetch(`http://localhost:8080/api/reading`, {
     method: 'POST',

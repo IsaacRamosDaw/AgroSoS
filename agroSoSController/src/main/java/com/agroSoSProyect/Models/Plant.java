@@ -32,14 +32,18 @@ public class Plant {
   @Column(nullable = false)
   private Integer z;
 
+  @Column(name = "device_id")
+  private Long deviceId;
+
   public Plant() {
   }
 
-  public Plant(String name, Integer x, Integer y, Integer z) {
+  public Plant(String name, Integer x, Integer y, Integer z, Long deviceId) {
     this.name = name;
     this.x = x;
     this.y = y;
     this.z = z;
+    this.deviceId = deviceId;
   }
 
   public Long getId() {
@@ -88,6 +92,14 @@ public class Plant {
 
   public void setZ(Integer z) {
     this.z = z;
+  }
+
+  public Long getDeviceId() {
+    return deviceId;
+  }
+
+  public void setDeviceId(Long deviceId) {
+    this.deviceId = deviceId;
   }
 
   @PrePersist

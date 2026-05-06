@@ -16,6 +16,12 @@ export const getSensorsByUserId = async (id) => {
     return data;
 }
 
+export const getSensorsByDeviceId = async (deviceId) => {
+    const response = await fetch(`http://localhost:8080/api/sensor/device/${deviceId}`);
+    const data = await response.json();
+    return data;
+}
+
 export const createSensor = async (sensor) => {
     const response = await fetch(`http://localhost:8080/api/sensor`, {
         method: 'POST',

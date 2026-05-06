@@ -1,21 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { CHeader, CContainer, CButton, CAvatar } from "@coreui/react";
 import { useAuth } from "../hook/auth/AuthContext";
 
 export const Header = () => {
-  const { user } = useAuth();
-
-  let link = "";
-  if (user) {
-    user.role === "ADMIN" ? link = "/adminDashBoard/:id" : link = "/home"
-  }
+  const { user, isAdmin } = useAuth();
+  const location = useLocation();
+  const onAdminPage = location.pathname.startsWith("/adminDashBoard");
 
   return (
     <CHeader position="sticky" className="bg-primary text-white shadow-sm py-3">
       <CContainer className="d-flex justify-content-between align-items-center">
         <Link
-          to={link}
+          to="/home"
           className="header-link text-decoration-none"
           style={{ fontSize: "1.5rem", fontWeight: "bold" }}
         >
@@ -36,6 +33,13 @@ export const Header = () => {
           >
             Tractor
           </Link>
+          {isAdmin() && !onAdminPage && (
+            <Link to={`/adminDashBoard/${user.id}`} className="text-decoration-none">
+              <CButton style={{ backgroundColor: '#ffc107', border: 'none', fontWeight: 'bold', color: '#000' }}>
+                Admin
+              </CButton>
+            </Link>
+          )}
         </div>
         {user ? (
           <Link to={`/user/${user.id}`} className="text-decoration-none">

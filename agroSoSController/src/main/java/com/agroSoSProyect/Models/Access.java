@@ -2,9 +2,12 @@ package com.agroSoSProyect.Models;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -16,20 +19,18 @@ public class Access {
   @Column(nullable = false)
   private Long id;
 
-  // @Column(nullable = false)
-  // @ManyToOne(fetch = FetchType.LAZY)
-  // @JoinColumn(name = "user_id", nullable = false)
-  private Long user;
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
-  // @Column(nullable = false)
-  // @ManyToOne(fetch = FetchType.LAZY)
-  // @JoinColumn(name = "device_id", nullable = false)
-  private Long device;
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "device_id", nullable = false)
+  private Device device;
 
   public Access() {
   }
 
-  public Access(Long user, Long device) {
+  public Access(User user, Device device) {
     this.user = user;
     this.device = device;
   }
@@ -42,19 +43,19 @@ public class Access {
     this.id = id;
   }
 
-  public Long getUser() {
+  public User getUser() {
     return user;
   }
 
-  public void setUser(Long user) {
+  public void setUser(User user) {
     this.user = user;
   }
 
-  public Long getDevice() {
+  public Device getDevice() {
     return device;
   }
 
-  public void setDevice(Long device) {
+  public void setDevice(Device device) {
     this.device = device;
   }
 }
