@@ -1,0 +1,741 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "AgroSoS API",
+    "description": "Colección completa de endpoints de la API REST de AgroSoS.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Bootstrap Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "http://localhost:8080/auth/bootstrap-admin",
+              "host": ["localhost:8080"],
+              "path": ["auth", "bootstrap-admin"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin\",\n  \"email\": \"admin@agrosos.com\",\n  \"password\": \"admin123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "http://localhost:8080/auth/login",
+              "host": ["localhost:8080"],
+              "path": ["auth", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@agrosos.com\",\n  \"password\": \"admin123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "http://localhost:8080/auth/register",
+              "host": ["localhost:8080"],
+              "path": ["auth", "register"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "http://localhost:8080/auth/update/:id",
+              "host": ["localhost:8080"],
+              "path": ["auth", "update", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"email\": \"updated@example.com\",\n  \"password\": \"newpassword123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Promote to Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "http://localhost:8080/auth/promote",
+              "host": ["localhost:8080"],
+              "path": ["auth", "promote"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requesterId\": 1,\n  \"targetUserId\": 2\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Revoke Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "http://localhost:8080/auth/revoke",
+              "host": ["localhost:8080"],
+              "path": ["auth", "revoke"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requesterId\": 1,\n  \"targetUserId\": 2\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/allUser",
+              "host": ["localhost:8080"],
+              "path": ["api", "allUser"]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/user/:id",
+              "host": ["localhost:8080"],
+              "path": ["api", "user", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "http://localhost:8080/api/user",
+              "host": ["localhost:8080"],
+              "path": ["api", "user"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New User\",\n  \"email\": \"newuser@example.com\",\n  \"password\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "http://localhost:8080/api/user/:id",
+              "host": ["localhost:8080"],
+              "path": ["api", "user", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated User\",\n  \"email\": \"updated@example.com\",\n  \"password\": \"newpassword123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:8080/api/user/:id",
+              "host": ["localhost:8080"],
+              "path": ["api", "user", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Devices",
+      "item": [
+        {
+          "name": "Get All Devices",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/device",
+              "host": ["localhost:8080"],
+              "path": ["api", "device"]
+            }
+          }
+        },
+        {
+          "name": "Get Device by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/device/:id",
+              "host": ["localhost:8080"],
+              "path": ["api", "device", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Get Devices by User",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/device/user/:userId",
+              "host": ["localhost:8080"],
+              "path": ["api", "device", "user", ":userId"],
+              "variable": [{ "key": "userId", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Create Device",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "http://localhost:8080/api/device",
+              "host": ["localhost:8080"],
+              "path": ["api", "device"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mi FarmBot\",\n  \"type\": \"FarmBot\",\n  \"user\": { \"id\": 1 }\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Initialize Sensors",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:8080/api/device/:id/init-sensors",
+              "host": ["localhost:8080"],
+              "path": ["api", "device", ":id", "init-sensors"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Update Device",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "http://localhost:8080/api/device/:id",
+              "host": ["localhost:8080"],
+              "path": ["api", "device", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mi FarmBot Actualizado\",\n  \"type\": \"FarmBot\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Delete Device",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:8080/api/device/:id",
+              "host": ["localhost:8080"],
+              "path": ["api", "device", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Plants",
+      "item": [
+        {
+          "name": "Get All Plants",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/plant",
+              "host": ["localhost:8080"],
+              "path": ["api", "plant"]
+            }
+          }
+        },
+        {
+          "name": "Get Plant by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/plant/:id",
+              "host": ["localhost:8080"],
+              "path": ["api", "plant", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Get Plants by Device",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/plant/device/:deviceId",
+              "host": ["localhost:8080"],
+              "path": ["api", "plant", "device", ":deviceId"],
+              "variable": [{ "key": "deviceId", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Create Plant",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "http://localhost:8080/api/plant",
+              "host": ["localhost:8080"],
+              "path": ["api", "plant"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tomato\",\n  \"x\": 10,\n  \"y\": 20,\n  \"z\": 0,\n  \"deviceId\": 1,\n  \"createdAt\": \"2024-01-01T00:00:00\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Update Plant",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "http://localhost:8080/api/plant/:id",
+              "host": ["localhost:8080"],
+              "path": ["api", "plant", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tomato Updated\",\n  \"x\": 15,\n  \"y\": 25,\n  \"z\": 0,\n  \"deviceId\": 1,\n  \"createdAt\": \"2024-01-01T00:00:00\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Delete Plant",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:8080/api/plant/:id",
+              "host": ["localhost:8080"],
+              "path": ["api", "plant", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Sensors",
+      "item": [
+        {
+          "name": "Get All Sensors",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/allSensor",
+              "host": ["localhost:8080"],
+              "path": ["api", "allSensor"]
+            }
+          }
+        },
+        {
+          "name": "Get Sensor by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/sensor/:id",
+              "host": ["localhost:8080"],
+              "path": ["api", "sensor", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Get Sensors by Device",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/sensor/device/:deviceId",
+              "host": ["localhost:8080"],
+              "path": ["api", "sensor", "device", ":deviceId"],
+              "variable": [{ "key": "deviceId", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Create Sensor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "http://localhost:8080/api/sensor",
+              "host": ["localhost:8080"],
+              "path": ["api", "sensor"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pin\": 1,\n  \"label\": \"Temperature\",\n  \"device\": 1,\n  \"mode\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Update Sensor",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "http://localhost:8080/api/sensor/:id",
+              "host": ["localhost:8080"],
+              "path": ["api", "sensor", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pin\": 1,\n  \"label\": \"Temperature Updated\",\n  \"device\": 1,\n  \"mode\": 2\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Delete Sensor",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:8080/api/sensor/:id",
+              "host": ["localhost:8080"],
+              "path": ["api", "sensor", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Readings",
+      "item": [
+        {
+          "name": "Get All Readings",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/reading",
+              "host": ["localhost:8080"],
+              "path": ["api", "reading"]
+            }
+          }
+        },
+        {
+          "name": "Get Reading by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/reading/:id",
+              "host": ["localhost:8080"],
+              "path": ["api", "reading", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Get Readings by Device",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/reading/device/:deviceId",
+              "host": ["localhost:8080"],
+              "path": ["api", "reading", "device", ":deviceId"],
+              "variable": [{ "key": "deviceId", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Get Readings by Sensor",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/reading/sensor/:sensorId",
+              "host": ["localhost:8080"],
+              "path": ["api", "reading", "sensor", ":sensorId"],
+              "variable": [{ "key": "sensorId", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Get Readings by Plant",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/reading/plant/:plantId",
+              "host": ["localhost:8080"],
+              "path": ["api", "reading", "plant", ":plantId"],
+              "variable": [{ "key": "plantId", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Create Reading",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "http://localhost:8080/api/reading",
+              "host": ["localhost:8080"],
+              "path": ["api", "reading"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mode\": 1,\n  \"pin\": 1,\n  \"value\": \"25.5\",\n  \"x\": 0,\n  \"y\": 0,\n  \"z\": 0,\n  \"device\": 1,\n  \"sensor\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Delete Reading",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:8080/api/reading/:id",
+              "host": ["localhost:8080"],
+              "path": ["api", "reading", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Access (User-Device)",
+      "item": [
+        {
+          "name": "Get All Access",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/access",
+              "host": ["localhost:8080"],
+              "path": ["api", "access"]
+            }
+          }
+        },
+        {
+          "name": "Get Access by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/access/:id",
+              "host": ["localhost:8080"],
+              "path": ["api", "access", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Get Access by User",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/access/user/:userId",
+              "host": ["localhost:8080"],
+              "path": ["api", "access", "user", ":userId"],
+              "variable": [{ "key": "userId", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Get Access by Device",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/access/device/:deviceId",
+              "host": ["localhost:8080"],
+              "path": ["api", "access", "device", ":deviceId"],
+              "variable": [{ "key": "deviceId", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Grant Access (Create)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "http://localhost:8080/api/access",
+              "host": ["localhost:8080"],
+              "path": ["api", "access"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": { \"id\": 1 },\n  \"device\": { \"id\": 1 }\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Update Access (Reassign)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "http://localhost:8080/api/access/:id",
+              "host": ["localhost:8080"],
+              "path": ["api", "access", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": { \"id\": 2 },\n  \"device\": { \"id\": 1 }\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Revoke Access (Delete)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:8080/api/access/:id",
+              "host": ["localhost:8080"],
+              "path": ["api", "access", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Generator",
+      "item": [
+        {
+          "name": "Seed Demo Data",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:8080/api/generator/seed/:userId",
+              "host": ["localhost:8080"],
+              "path": ["api", "generator", "seed", ":userId"],
+              "variable": [{ "key": "userId", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Start Generator",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:8080/api/generator/start",
+              "host": ["localhost:8080"],
+              "path": ["api", "generator", "start"]
+            }
+          }
+        },
+        {
+          "name": "Stop Generator",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:8080/api/generator/stop",
+              "host": ["localhost:8080"],
+              "path": ["api", "generator", "stop"]
+            }
+          }
+        },
+        {
+          "name": "Generator Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/api/generator/status",
+              "host": ["localhost:8080"],
+              "path": ["api", "generator", "status"]
+            }
+          }
+        },
+        {
+          "name": "Trigger Reading (Manual)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:8080/api/generator/trigger/:deviceId",
+              "host": ["localhost:8080"],
+              "path": ["api", "generator", "trigger", ":deviceId"],
+              "variable": [{ "key": "deviceId", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Clear Readings",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:8080/api/generator/clear/:deviceId",
+              "host": ["localhost:8080"],
+              "path": ["api", "generator", "clear", ":deviceId"],
+              "variable": [{ "key": "deviceId", "value": "1" }]
+            }
+          }
+        }
+      ]
+    }
+
+  ]
+}

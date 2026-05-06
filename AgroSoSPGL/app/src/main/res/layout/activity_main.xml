@@ -7,29 +7,38 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:text="Welcome to AgroSoSPGL"
+        android:id="@+id/tvWelcome"
+        android:text="Bienvenido/a"
         android:textSize="24sp"
+        android:textStyle="bold"
         android:layout_marginBottom="32dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/btnUsers"
-        android:text="Go to Users"
+        android:text="Gestionar usuarios"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="12dp"/>
 
     <Button
         android:id="@+id/btnPlants"
-        android:text="Go to Plants"
+        android:text="Plantas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="12dp"/>
 
     <Button
         android:id="@+id/btnDevices"
-        android:text="Go to Devices"
+        android:text="Dispositivos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"/>
+
+    <Button
+        android:id="@+id/btnLogout"
+        android:text="Cerrar sesión"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>

@@ -14,21 +14,21 @@
 
         <Button
             android:id="@+id/btnHome"
-            android:text="Home"
+            android:text="Inicio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp" />
 
         <Button
             android:id="@+id/btnUsers"
-            android:text="Users"
+            android:text="Usuarios"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp" />
 
         <Button
             android:id="@+id/btnDevices"
-            android:text="Devices"
+            android:text="Dispositivos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -50,7 +50,7 @@
 
         <Button
             android:id="@+id/btnCreatePlant"
-            android:text="Create Plant"
+            android:text="Nueva planta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

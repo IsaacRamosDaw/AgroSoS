@@ -38,7 +38,7 @@ public class PlantsAdapter extends RecyclerView.Adapter<PlantsAdapter.PlantViewH
 
         holder.tvName.setText(plant.getName());
         holder.tvCoordinates.setText("x: " + plant.getX() + ", y: " + plant.getY() + ", z: " + plant.getZ());
-        holder.tvCreatedAt.setText("Created: " + plant.getCreatedAt());
+        holder.tvCreatedAt.setText("Creado: " + plant.getCreatedAt());
 
         // TIENES QUE MANTENER PULSADO PARA EDITAR
         holder.itemView.setOnLongClickListener(v -> {
@@ -54,7 +54,7 @@ public class PlantsAdapter extends RecyclerView.Adapter<PlantsAdapter.PlantViewH
 
     private void showEditDeleteDialog(Plant plant) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("Edit or Delete Plant");
+        builder.setTitle("Editar o eliminar planta");
 
         View view = LayoutInflater.from(activity).inflate(R.layout.dialog_edit_plant, null);
         EditText etName = view.findViewById(R.id.etPlantName);
@@ -69,7 +69,7 @@ public class PlantsAdapter extends RecyclerView.Adapter<PlantsAdapter.PlantViewH
 
         builder.setView(view);
 
-        builder.setPositiveButton("Save", (dialog, which) -> {
+        builder.setPositiveButton("Guardar", (dialog, which) -> {
             plant.setName(etName.getText().toString());
             plant.setX(Integer.parseInt(etX.getText().toString()));
             plant.setY(Integer.parseInt(etY.getText().toString()));
@@ -77,9 +77,9 @@ public class PlantsAdapter extends RecyclerView.Adapter<PlantsAdapter.PlantViewH
             activity.updatePlant(plant);
         });
 
-        builder.setNegativeButton("Delete", (dialog, which) -> activity.deletePlant(plant.getId()));
+        builder.setNegativeButton("Eliminar", (dialog, which) -> activity.deletePlant(plant.getId()));
 
-        builder.setNeutralButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.setNeutralButton("Cancelar", (dialog, which) -> dialog.dismiss());
 
         builder.show();
     }

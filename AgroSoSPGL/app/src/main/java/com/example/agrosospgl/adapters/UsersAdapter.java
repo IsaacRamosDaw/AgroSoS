@@ -1,9 +1,11 @@
 package com.example.agrosospgl.adapters;
 
+import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,10 +16,19 @@ import java.util.List;
 
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHolder> {
 
-    private List<User> userList;
+    public interface OnUserActionListener {
+        void onEdit(User user);
+        void onDelete(User user);
+        void onPromote(User user);
+        void onRevoke(User user);
+    }
 
-    public UsersAdapter(List<User> userList) {
+    private final List<User> userList;
+    private final OnUserActionListener listener;
+
+    public UsersAdapter(List<User> userList, OnUserActionListener listener) {
         this.userList = userList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -33,7 +44,26 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         User user = userList.get(position);
         holder.tvName.setText(user.getName());
         holder.tvEmail.setText(user.getEmail());
-        holder.tvRole.setText("Role: " + user.getRole());
+        holder.tvRole.setText("Rol: " + user.getRole());
+
+        holder.itemView.setOnLongClickListener(v -> {
+            boolean isAdmin = "ADMIN".equals(user.getRole());
+            String roleAction = isAdmin ? "Revocar Admin" : "Promover a Admin";
+            new AlertDialog.Builder(v.getContext())
+                    .setTitle(user.getName())
+                    .setItems(new String[]{"Editar", "Eliminar", roleAction}, (dialog, which) -> {
+                        switch (which) {
+                            case 0: listener.onEdit(user); break;
+                            case 1: listener.onDelete(user); break;
+                            case 2:
+                                if (isAdmin) listener.onRevoke(user);
+                                else listener.onPromote(user);
+                                break;
+                        }
+                    })
+                    .show();
+            return true;
+        });
     }
 
     @Override
@@ -52,4 +82,3 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         }
     }
 }
-

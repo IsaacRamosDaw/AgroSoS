@@ -17,6 +17,7 @@ import com.example.agrosospgl.adapters.PlantsAdapter;
 import com.example.agrosospgl.api.ApiClient;
 import com.example.agrosospgl.api.ApiService;
 import com.example.agrosospgl.models.Plant;
+import com.example.agrosospgl.utils.SessionManager;
 
 import java.util.List;
 
@@ -29,11 +30,14 @@ public class PlantsActivity extends AppCompatActivity {
     private RecyclerView rvPlants;
     private PlantsAdapter adapter;
     private List<Plant> plants;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plants);
+
+        sessionManager = new SessionManager(this);
 
         rvPlants = findViewById(R.id.rvPlants);
         rvPlants.setLayoutManager(new LinearLayoutManager(this));
@@ -42,6 +46,10 @@ public class PlantsActivity extends AppCompatActivity {
         Button btnUsers = findViewById(R.id.btnUsers);
         Button btnDevices = findViewById(R.id.btnDevices);
         Button btnCreate = findViewById(R.id.btnCreatePlant);
+
+        if (!sessionManager.isAdmin()) {
+            btnUsers.setVisibility(View.GONE);
+        }
 
         btnHome.setOnClickListener(v -> startActivity(new Intent(this, MainActivity.class)));
         btnUsers.setOnClickListener(v -> startActivity(new Intent(this, UsersActivity.class)));
@@ -65,7 +73,7 @@ public class PlantsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Plant>> call, Throwable t) {
-                Toast.makeText(PlantsActivity.this, "Error fetching plants: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PlantsActivity.this, "Error al cargar plantas: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -84,9 +92,9 @@ public class PlantsActivity extends AppCompatActivity {
         etZ.setText("0");
 
         new AlertDialog.Builder(this)
-                .setTitle("Create New Plant")
+                .setTitle("Nueva planta")
                 .setView(dialogView)
-                .setPositiveButton("Create", (dialog, which) -> {
+                .setPositiveButton("Crear", (dialog, which) -> {
                     try {
                         Plant plant = new Plant();
                         plant.setName(etName.getText().toString());
@@ -100,11 +108,11 @@ public class PlantsActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<Plant> call, Response<Plant> response) {
                                 if (response.isSuccessful() && response.body() != null) {
-                                    Toast.makeText(PlantsActivity.this, "Plant created!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(PlantsActivity.this, "Planta creada", Toast.LENGTH_SHORT).show();
                                     fetchPlants();
                                 } else {
                                     Toast.makeText(PlantsActivity.this,
-                                            "Failed to create plant: " + response.code(),
+                                            "Error al crear planta: " + response.code(),
                                             Toast.LENGTH_LONG).show();
                                 }
                             }
@@ -112,16 +120,16 @@ public class PlantsActivity extends AppCompatActivity {
                             @Override
                             public void onFailure(Call<Plant> call, Throwable t) {
                                 Toast.makeText(PlantsActivity.this,
-                                        "Error creating plant: " + t.getMessage(),
+                                        "Error al crear planta: " + t.getMessage(),
                                         Toast.LENGTH_LONG).show();
                             }
                         });
 
                     } catch (NumberFormatException e) {
-                        Toast.makeText(PlantsActivity.this, "Invalid coordinates", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PlantsActivity.this, "Coordenadas inválidas", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss())
                 .show();
     }
 
@@ -130,13 +138,13 @@ public class PlantsActivity extends AppCompatActivity {
         apiService.deletePlant(id).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                Toast.makeText(PlantsActivity.this, "Plant deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PlantsActivity.this, "Planta eliminada", Toast.LENGTH_SHORT).show();
                 fetchPlants();
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(PlantsActivity.this, "Error deleting plant: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PlantsActivity.this, "Error al eliminar planta: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -146,13 +154,13 @@ public class PlantsActivity extends AppCompatActivity {
         apiService.updatePlant(plant.getId(), plant).enqueue(new Callback<Plant>() {
             @Override
             public void onResponse(Call<Plant> call, Response<Plant> response) {
-                Toast.makeText(PlantsActivity.this, "Plant updated", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PlantsActivity.this, "Planta actualizada", Toast.LENGTH_SHORT).show();
                 fetchPlants();
             }
 
             @Override
             public void onFailure(Call<Plant> call, Throwable t) {
-                Toast.makeText(PlantsActivity.this, "Error updating plant: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PlantsActivity.this, "Error al actualizar planta: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:padding="12dp"
+    android:gravity="center_vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
-    android:gravity="center_vertical">
+    android:background="?android:attr/selectableItemBackground">
 
     <LinearLayout
         android:orientation="vertical"
@@ -14,31 +14,23 @@
         android:layout_weight="1">
 
         <TextView
-            android:id="@+id/tvDeviceName"
-            android:text="Nombre"
-            android:textSize="18sp"
+            android:id="@+id/tvReadingDate"
+            android:textSize="15sp"
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <TextView
-            android:id="@+id/tvDeviceType"
-            android:text="Tipo: FarmBot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"/>
-
-        <TextView
-            android:id="@+id/tvDeviceUser"
-            android:text="ID Usuario: 1"
+            android:id="@+id/tvReadingTime"
+            android:textSize="13sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"/>
     </LinearLayout>
 
     <Button
-        android:id="@+id/btnReadings"
-        android:text="Lecturas"
+        android:id="@+id/btnVerLectura"
+        android:text="Ver Lectura"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 </LinearLayout>

@@ -10,4 +10,8 @@ public class Device {
     public String getName() { return name; }
     public int getUser() { return user; }
     public String getType() { return type; }
+
+    public void setName(String name) { this.name = name; }
+    public void setType(String type) { this.type = type; }
+    public void setUser(int user) { this.user = user; }
 }

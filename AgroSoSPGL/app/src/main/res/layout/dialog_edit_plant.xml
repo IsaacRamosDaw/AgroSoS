@@ -7,27 +7,27 @@
 
     <EditText
         android:id="@+id/etPlantName"
-        android:hint="Name"
+        android:hint="Nombre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <EditText
         android:id="@+id/etPlantX"
-        android:hint="X coordinate"
+        android:hint="Coordenada X"
         android:inputType="number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <EditText
         android:id="@+id/etPlantY"
-        android:hint="Y coordinate"
+        android:hint="Coordenada Y"
         android:inputType="number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <EditText
         android:id="@+id/etPlantZ"
-        android:hint="Z coordinate"
+        android:hint="Coordenada Z"
         android:inputType="number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

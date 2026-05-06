@@ -1,14 +1,19 @@
 package com.example.agrosospgl.models;
 
 public class User {
-    private int id;
+    private Integer id;
     private String name;
     private String email;
+    private String password;
     private String role;
 
-    // Getters
-    public int getId() { return id; }
+    public Integer getId() { return id; }
     public String getName() { return name; }
     public String getEmail() { return email; }
+    public String getPassword() { return password; }
     public String getRole() { return role; }
+
+    public void setName(String name) { this.name = name; }
+    public void setEmail(String email) { this.email = email; }
+    public void setPassword(String password) { this.password = password; }
 }
