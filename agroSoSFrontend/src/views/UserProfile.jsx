@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { Header } from '../components/Header'
@@ -16,13 +17,17 @@ export function User() {
   };
 
   // En lo que carga los datos del usuario se devuelve un mensaje de cargando un usuario
-  if (loading) { return <div>Cargando usuario...</div>; }
+  if (loading) { return <div className="text-center py-5">Cargando usuario...</div>; }
 
   // Si el usuario no está logueado, lo redirige al login
   if (!user) { navigate('/login'); return null; }
 
 
   return (<>
+    <Helmet>
+      <title>Perfil de Usuario - AgroSoS</title>
+      <meta name="description" content={`Gestiona tu cuenta de AgroSoS. Datos del usuario: ${user.name}.`} />
+    </Helmet>
     <Header />
     <CContainer fluid className="bg-light min-vh-100 py-5">
       <CRow className="justify-content-center">
@@ -36,58 +41,66 @@ export function User() {
                   size="xl"
                   src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
                   className="mb-3 border border-3 border-primary"
+                  alt={`Foto de perfil de ${user.name}`}
                 />
-                <CCardTitle className="h3 mb-0">{user.name}</CCardTitle>
+                <CCardTitle component="h2" className="h3 mb-0">{user.name}</CCardTitle>
                 <p className="text-muted">{user.email}</p>
               </div>
 
               {/* Datos del usuario */}
-              <div className="mb-4">
-                <CRow className="mb-2">
-                  <CCol xs={5} className="text-end fw-semibold text-secondary">
-                    ID:
-                  </CCol>
-                  <CCol xs={7}>{user.id}</CCol>
-                </CRow>
+              <section aria-labelledby="user-details-title">
+                <h3 id="user-details-title" className="visually-hidden">Detalles de la cuenta</h3>
+                <div className="mb-4">
+                  <CRow className="mb-2">
+                    <CCol xs={5} className="text-end fw-semibold text-secondary">
+                      ID:
+                    </CCol>
+                    <CCol xs={7}>{user.id}</CCol>
+                  </CRow>
 
-                <CRow className="mb-2">
-                  <CCol xs={5} className="text-end fw-semibold text-secondary">
-                    Creado el:
-                  </CCol>
-                  <CCol xs={7}>{new Date(user.createdAt).toLocaleDateString()}</CCol>
-                </CRow>
+                  <CRow className="mb-2">
+                    <CCol xs={5} className="text-end fw-semibold text-secondary">
+                      Creado el:
+                    </CCol>
+                    <CCol xs={7}>{new Date(user.createdAt).toLocaleDateString()}</CCol>
+                  </CRow>
 
-                <CRow className="mb-2">
-                  <CCol xs={5} className="text-end fw-semibold text-secondary">
-                    Última actualización:
-                  </CCol>
-                  <CCol xs={7}>{new Date(user.updatedAt).toLocaleDateString()}</CCol>
-                </CRow>
-                {/* 
-                <CRow className="mb-2">
-                  <CCol xs={5} className="text-end fw-semibold text-secondary">
-                    Términos:
-                  </CCol>
-                  <CCol xs={7}>
-                    {user.terms_accepted ? (<CBadge color="success">Aceptados</CBadge>) : (
-                      <CBadge color="danger">No aceptados</CBadge>)}
-                  </CCol>
-                </CRow> */}
-              </div>
+                  <CRow className="mb-2">
+                    <CCol xs={5} className="text-end fw-semibold text-secondary">
+                      Última actualización:
+                    </CCol>
+                    <CCol xs={7}>{new Date(user.updatedAt).toLocaleDateString()}</CCol>
+                  </CRow>
+                </div>
+              </section>
 
-              {/* Botón */}
-              <div className="text-center d-flex justify-content-center gap-3">
+              {/* Botones de acción */}
+              <div className="text-center d-flex justify-content-center gap-3 flex-wrap">
 
-                <Link to={`/user/edit/${user.id}`}>
+                <Link to={`/user/edit/${user.id}`} aria-label="Editar mis datos personales">
                   <CButton color="primary" size="lg" className="px-5">
                     Modificar mis datos
                   </CButton>
                 </Link>
 
-                <Link to={`/login`}>
-                  <CButton color="primary" size="lg" className="px-5" onClick={handleLogout}>
-                    Cerrar sesión
-                  </CButton>
+                <CButton 
+                  color="outline-danger" 
+                  size="lg" 
+                  className="px-5" 
+                  onClick={handleLogout}
+                  aria-label="Cerrar sesión de la cuenta"
+                >
+                  Cerrar sesión
+                </CButton>
+              </div>
+
+              <div className="text-center mt-4 pt-4 border-top">
+                <Link 
+                  to="/fol-info" 
+                  className="text-decoration-none text-success fw-bold"
+                  aria-label="Más información sobre el proyecto FOL y compromiso ambiental"
+                >
+                  Comprometidos con el medio ambiente y la seguridad laboral agrícola
                 </Link>
               </div>
 
@@ -99,4 +112,4 @@ export function User() {
   </>)
 }
 
-export default User
+export default User

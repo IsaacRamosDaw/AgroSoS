@@ -1,15 +1,139 @@
 .home {
-  padding-bottom: 2rem;
+  padding-bottom: 4rem;
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+.device-selection-title {
+  text-align: center;
+  font-size: 3rem;
+  font-weight: 800;
+  margin-top: 4rem;
+  margin-bottom: 1rem;
+  color: #1b5e20;
+  letter-spacing: -1.5px;
+}
+
+.device-selection-subtitle {
+  text-align: center;
+  color: #666;
+  font-size: 1.2rem;
+  margin-bottom: 4rem;
 }
 
 .device-divider {
-  width: 2px;
-  background-color: #f0f0f0;
-  border-radius: 2px;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, #e0e0e0, transparent);
+  align-self: stretch;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 992px) {
   .device-divider {
     display: none;
   }
+}
+
+/* Device Selection Card Styles */
+.device-card {
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 24px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.device-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+  background-color: #ffffff;
+}
+
+.device-icon-wrapper {
+  padding: 1rem;
+  border-radius: 50%;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.farmbot-wrapper {
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.tractor-wrapper {
+  background-color: rgba(255, 235, 59, 0.1);
+}
+
+.device-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.device-desc {
+  color: #7f8c8d;
+  margin-top: 0.5rem;
+}
+
+.device-list-container {
+  width: 100%;
+  border-top: 2px dashed #f0f0f0;
+  padding-top: 1.5rem;
+}
+
+.device-list-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #95a5a6;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.device-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.device-link {
+  display: block;
+  text-decoration: none;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.farmbot-link {
+  color: #4CAF50;
+}
+
+.farmbot-link:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.tractor-link {
+  color: #fbc02d;
+}
+
+.tractor-link:hover {
+  background-color: #ffeb3b;
+  color: #333;
 }

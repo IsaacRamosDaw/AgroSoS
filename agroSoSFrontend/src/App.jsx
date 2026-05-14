@@ -11,6 +11,7 @@ import Tractor from './views/Tractor';
 import FarmBot from './views/FarmBot';
 import FarmBotList from './views/FarmBotList';
 import TractorList from './views/TractorList';
+import FolInfo from './views/FolInfo';
 
 // Components
 import { Footer } from './components/Footer';
@@ -46,6 +47,7 @@ function App() {
             <Route path='/farmbot/:deviceId' element={<ProtectedRoute><FarmBot /></ProtectedRoute>} />
             <Route path='/tractor' element={<ProtectedRoute><TractorList /></ProtectedRoute>} />
             <Route path='/tractor/:deviceId' element={<ProtectedRoute><Tractor /></ProtectedRoute>} />
+            <Route path='/fol-info' element={<ProtectedRoute><FolInfo /></ProtectedRoute>} />
           </Routes>
         </div>
         <Footer />
