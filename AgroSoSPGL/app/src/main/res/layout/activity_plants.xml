@@ -3,34 +3,45 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginBottom="12dp">
+        android:layout_marginBottom="12dp"
+        android:spacing="8dp">
 
         <Button
             android:id="@+id/btnHome"
             android:text="Inicio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp" />
+            android:textColor="@color/white"
+            android:background="@drawable/shape_button_primary"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp" />
 
         <Button
             android:id="@+id/btnUsers"
             android:text="Usuarios"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp" />
+            android:textColor="@color/white"
+            android:background="@drawable/shape_button_secondary"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp" />
 
         <Button
             android:id="@+id/btnDevices"
             android:text="Dispositivos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/white"
+            android:background="@drawable/shape_button_primary"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1" />
     </LinearLayout>
 
     <!-- RecyclerView for Plants -->
@@ -51,8 +62,10 @@
         <Button
             android:id="@+id/btnCreatePlant"
             android:text="Nueva planta"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/white"
+            android:background="@drawable/shape_button_primary"
+            android:layout_width="match_parent"
+            android:layout_height="48dp" />
 
     </LinearLayout>
 </LinearLayout>

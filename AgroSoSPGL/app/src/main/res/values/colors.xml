@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="primary">#5E4A7D</color>
+    <color name="primary_light">#6F5B96</color>
+    <color name="primary_lighter">#9D7FD1</color>
+    
+    <color name="secondary">#8B5A3C</color>
+    <color name="secondary_light">#A8734E</color>
+    
+    <color name="accent">#B89FD9</color>
+    <color name="accent_light">#D4BFEB</color>
+    
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="background">#F8F5FC</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#F0EBF8</color>
+    
+    <color name="text_primary">#3E2F5E</color>
+    <color name="text_secondary">#6B5B7F</color>
+    <color name="text_light">#A79CB5</color>
+    
+    <color name="success">#2E7D32</color>
+    <color name="warning">#F57C00</color>
+    <color name="error">#C62828</color>
+    <color name="info">#0277BD</color>
+    
+    <color name="overlay_dark">#3E2F5ECC</color>
+    <color name="overlay_light">#F8F5FCCC</color>
 </resources>

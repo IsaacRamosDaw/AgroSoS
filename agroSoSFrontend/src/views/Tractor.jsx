@@ -252,9 +252,9 @@ function Tractor() {
 
             {/* Grid de sensores */}
             <div
-              style={{  
+              style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
+                gridTemplateColumns: "repeat(2, 1fr)",
                 gap: "1.5rem",
                 maxWidth: "900px",
                 margin: "0 auto",

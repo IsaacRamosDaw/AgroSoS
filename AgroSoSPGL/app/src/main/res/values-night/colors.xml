@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors - Green theme for agriculture -->
+    <color name="primary">#52B788</color>
+    <color name="primary_light">#74C69D</color>
+    <color name="primary_lighter">#95D5B2</color>
+    
+    <!-- Secondary Colors - Earth tones -->
+    <color name="secondary">#D8A889</color>
+    <color name="secondary_light">#E5B9A1</color>
+    
+    <!-- Accent Color - Vibrant green -->
+    <color name="accent">#95D5B2</color>
+    <color name="accent_light">#B7E4C7</color>
+    
+    <!-- Neutral Colors -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="background">#121212</color>
+    <color name="surface">#1E1E1E</color>
+    <color name="surface_variant">#2C3E2F</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#E0E0E0</color>
+    <color name="text_secondary">#A1A1A1</color>
+    <color name="text_light">#707070</color>
+    
+    <!-- System Colors -->
+    <color name="success">#66BB6A</color>
+    <color name="warning">#FFA726</color>
+    <color name="error">#EF5350</color>
+    <color name="info">#42A5F5</color>
+    
+    <!-- Overlay Colors -->
+    <color name="overlay_dark">#1B4332CC</color>
+    <color name="overlay_light">#F5F9F7CC</color>
+</resources>

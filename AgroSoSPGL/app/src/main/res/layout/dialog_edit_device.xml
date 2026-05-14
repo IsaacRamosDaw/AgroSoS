@@ -3,23 +3,35 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/surface">
 
     <EditText
         android:id="@+id/etDeviceName"
         android:hint="Nombre del dispositivo"
+        android:textColor="@color/text_primary"
+        android:textColorHint="@color/text_light"
+        android:background="@drawable/shape_input_field"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="44dp"
         android:layout_marginBottom="12dp"/>
 
     <TextView
         android:text="Tipo de dispositivo"
+        android:textColor="@color/text_primary"
+        android:textStyle="bold"
+        android:textSize="12sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"/>
+        android:layout_marginBottom="6dp"/>
 
     <Spinner
         android:id="@+id/spDeviceType"
+        android:background="@drawable/shape_input_field"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="44dp"/>
 </LinearLayout>

@@ -36,14 +36,21 @@ export const buildHistory = (sensorList, readingList) => {
         date: dt.toLocaleDateString('es-ES'),
         time: dt.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
         sensors: [],
+        sensorIds: new Set(), // Track which sensors have been added
       }
     }
     const sensor = sensorList.find(s => s.id === reading.sensor)
-    grouped[key].sensors.push({
-      name: sensor?.label ?? `Pin ${reading.pin}`,
-      value: reading.value,
-      unit: sensor ? getUnit(sensor.label) : '',
-    })
+    // Only add sensor reading if we haven't already added this sensor for this timestamp
+    if (!grouped[key].sensorIds.has(reading.sensor)) {
+      grouped[key].sensors.push({
+        name: sensor?.label ?? `Pin ${reading.pin}`,
+        value: reading.value,
+        unit: sensor ? getUnit(sensor.label) : '',
+      })
+      grouped[key].sensorIds.add(reading.sensor)
+    }
   })
+  // Clean up the sensorIds property before returning
+  Object.values(grouped).forEach(entry => delete entry.sensorIds)
   return Object.values(grouped).sort((a, b) => b.isoKey.localeCompare(a.isoKey))
 }

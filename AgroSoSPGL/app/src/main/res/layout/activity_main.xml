@@ -4,13 +4,15 @@
     android:padding="16dp"
     android:gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
     <TextView
         android:id="@+id/tvWelcome"
         android:text="Bienvenido/a"
-        android:textSize="24sp"
+        android:textSize="28sp"
         android:textStyle="bold"
+        android:textColor="@color/primary"
         android:layout_marginBottom="32dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
@@ -18,27 +20,35 @@
     <Button
         android:id="@+id/btnUsers"
         android:text="Gestionar usuarios"
+        android:textColor="@color/white"
+        android:background="@drawable/shape_button_primary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginBottom="12dp"/>
 
     <Button
         android:id="@+id/btnPlants"
         android:text="Plantas"
+        android:textColor="@color/white"
+        android:background="@drawable/shape_button_secondary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginBottom="12dp"/>
 
     <Button
         android:id="@+id/btnDevices"
         android:text="Dispositivos"
+        android:textColor="@color/white"
+        android:background="@drawable/shape_button_primary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginBottom="32dp"/>
 
     <Button
         android:id="@+id/btnLogout"
         android:text="Cerrar sesión"
+        android:textColor="@color/error"
+        android:background="@drawable/shape_button_secondary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="48dp"/>
 </LinearLayout>
