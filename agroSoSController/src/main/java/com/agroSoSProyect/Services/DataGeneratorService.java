@@ -90,14 +90,22 @@ public class DataGeneratorService {
     @Scheduled(fixedRate = 30000)
     public void generateReadings() {
         if (!running) return;
-        sensorRepository.findAll().forEach(this::saveReading);
+        sensorRepository.findAll().forEach(sensor -> saveReading(sensor, null));
     }
 
     public void generateReadingsForDevice(Long deviceId) {
-        sensorRepository.findByDevice(deviceId).forEach(this::saveReading);
+        generateReadingsForDevice(deviceId, null);
+    }
+
+    public void generateReadingsForDevice(Long deviceId, Long plantId) {
+        sensorRepository.findByDevice(deviceId).forEach(sensor -> saveReading(sensor, plantId));
     }
 
     private void saveReading(Sensor sensor) {
+        saveReading(sensor, null);
+    }
+
+    private void saveReading(Sensor sensor, Long plantId) {
         Readings reading = new Readings();
         reading.setMode(sensor.getMode());
         reading.setPin(sensor.getPin());
@@ -106,6 +114,7 @@ public class DataGeneratorService {
         reading.setY(0);
         reading.setZ(0);
         reading.setDevice(sensor.getDevice());
+        reading.setPlant(plantId);
         reading.setSensor(sensor.getId());
         readingRepository.save(reading);
     }

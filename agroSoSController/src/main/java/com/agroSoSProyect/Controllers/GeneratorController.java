@@ -38,7 +38,13 @@ public class GeneratorController {
 
     @PostMapping("/api/generator/trigger/{deviceId}")
     public Map<String, String> trigger(@PathVariable Long deviceId) {
-        generatorService.generateReadingsForDevice(deviceId);
+        generatorService.generateReadingsForDevice(deviceId, null);
+        return Map.of("message", "Lectura generada correctamente");
+    }
+
+    @PostMapping("/api/generator/trigger/{deviceId}/{plantId}")
+    public Map<String, String> trigger(@PathVariable Long deviceId, @PathVariable Long plantId) {
+        generatorService.generateReadingsForDevice(deviceId, plantId);
         return Map.of("message", "Lectura generada correctamente");
     }
 

@@ -99,6 +99,9 @@ public interface ApiService {
     @POST("api/generator/trigger/{deviceId}")
     Call<Void> triggerReading(@Path("deviceId") int deviceId);
 
+    @POST("api/generator/trigger/{deviceId}/{plantId}")
+    Call<Void> triggerReadingWithPlant(@Path("deviceId") int deviceId, @Path("plantId") int plantId);
+
     @DELETE("api/generator/clear/{deviceId}")
     Call<Void> clearReadings(@Path("deviceId") int deviceId);
 }

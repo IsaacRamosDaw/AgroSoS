@@ -40,6 +40,12 @@ public class PlantsAdapter extends RecyclerView.Adapter<PlantsAdapter.PlantViewH
         holder.tvCoordinates.setText("x: " + plant.getX() + ", y: " + plant.getY() + ", z: " + plant.getZ());
         holder.tvCreatedAt.setText("Creado: " + plant.getCreatedAt());
 
+        holder.itemView.setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(activity, DevicesActivity.class);
+            intent.putExtra("plantId", plant.getId());
+            activity.startActivity(intent);
+        });
+
         // TIENES QUE MANTENER PULSADO PARA EDITAR
         holder.itemView.setOnLongClickListener(v -> {
             showEditDeleteDialog(plant);
