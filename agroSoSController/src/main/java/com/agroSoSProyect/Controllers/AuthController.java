@@ -1,250 +1,187 @@
 package com.agroSoSProyect.Controllers;
 
 import com.agroSoSProyect.Models.User;
-
 import com.agroSoSProyect.Repository.UserRepository;
 import com.agroSoSProyect.Repository.DeviceRepository;
+import com.agroSoSProyect.Services.AuthService;
+import com.agroSoSProyect.dto.AuthRequest;
+
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-	// Controlador de Registro y Login tanto de usuarios como administradores
-	// También se encarga de promover y revocar permisos de administrador 
-	// Todos los métodos devuelven un map
 @RestController
 @CrossOrigin("http://localhost:5173")
 @RequestMapping("/auth")
 public class AuthController {
 
-	@Autowired
-	private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-	@Autowired
-	private DeviceRepository deviceRepository;
+    @Autowired
+    private DeviceRepository deviceRepository;
 
-	@PostMapping("/bootstrap-admin")
-	public Map<String, Object> bootstrapAdmin(@RequestBody User adminData) {
-		boolean adminExists = userRepository.findAll().stream()
-				.anyMatch(u -> u.getRole() == com.agroSoSProyect.Models.Role.ADMIN);
-		if (adminExists) {
-			return Map.of("success", false, "message", "Ya existe un administrador en el sistema");
-		}
-		User existing = userRepository.findByEmail(adminData.getEmail());
-		if (existing != null) {
-			existing.setRole(com.agroSoSProyect.Models.Role.ADMIN);
-			userRepository.save(existing);
-			return Map.of("success", true, "message", "Usuario existente promovido a administrador");
-		}
-		adminData.setPassword(hashPassword(adminData.getPassword()));
-		adminData.setRole(com.agroSoSProyect.Models.Role.ADMIN);
-		User saved = userRepository.save(adminData);
-		return Map.of("success", true, "message", "Administrador creado correctamente", "user", saved);
-	}
+    @Autowired
+    private AuthService authService;
 
-	@PostMapping("/login")
-	public Map<String, Object> login(@RequestBody User loginData) {
-		User user = userRepository.findByEmail(loginData.getEmail());
+    @PostMapping("/bootstrap-admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Map<String, Object> bootstrapAdmin(@RequestBody User adminData) {
+        boolean adminExists = userRepository.findAll().stream()
+                .anyMatch(u -> u.getRole() == com.agroSoSProyect.Models.Role.ADMIN);
+        if (adminExists) {
+            return Map.of("success", false, "message", "Ya existe un administrador en el sistema");
+        }
+        User existing = userRepository.findByEmail(adminData.getEmail());
+        if (existing != null) {
+            existing.setRole(com.agroSoSProyect.Models.Role.ADMIN);
+            userRepository.save(existing);
+            return Map.of("success", true, "message", "Usuario existente promovido a administrador");
+        }
+        adminData.setPassword(hashPassword(adminData.getPassword()));
+        adminData.setRole(com.agroSoSProyect.Models.Role.ADMIN);
+        User saved = userRepository.save(adminData);
+        return Map.of("success", true, "message", "Administrador creado correctamente", "user", saved);
+    }
 
-		if (user == null) {
-			return Map.of(
-					"success", false,
-					"message", "Usuario no encontrado");
-		}
+    @PostMapping("/login")
+    public Map<String, Object> login(@Valid @RequestBody AuthRequest loginData) {
+        return authService.login(loginData);
+    }
 
-		if (user != null && !passwordEncoder.matches(loginData.getPassword(), user.getPassword())) {
-			return Map.of(
-					"success", false,
-					"message", "Contraseña incorrecta");
-		}
+    @PostMapping("/register")
+    public Map<String, Object> register(@Valid @RequestBody AuthRequest newUser) {
+        return authService.register(newUser);
+    }
 
-		return Map.of(
-				"success", true,
-				"message", "Usuario registrado correctamente",
-				"user", user,
-				"device", deviceRepository.findByUser(user.getId()));
-	}
+    @PostMapping("/refresh")
+    public Map<String, Object> refresh(@RequestBody Map<String, String> request) {
+        String refreshToken = request.get("refreshToken");
+        if (refreshToken == null) {
+            return Map.of("success", false, "message", "Refresh token is required");
+        }
+        return authService.refresh(refreshToken);
+    }
 
-	@PostMapping("/register")
-	public Map<String, Object> register(@RequestBody User newUser) {
-		User existingUser = userRepository.findByEmail(newUser.getEmail());
+    @PostMapping("/logout")
+    public Map<String, Object> logout() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        authService.logout(email);
+        return Map.of("success", true, "message", "Logout exitoso");
+    }
 
-		if (existingUser != null) {
-			return Map.of(
-					"success", false,
-					"message", "El email ya está registrado");
-		}
+    @PostMapping("/promote")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Map<String, Object> promoteToAdmin(@RequestBody Map<String, Long> data) {
+        if (data == null) {
+            return Map.of("success", false, "message", "Se proporciono un objeto null");
+        }
+        Long requesterId = data.get("requesterId");
+        Long targetUserId = data.get("targetUserId");
+        if (requesterId == null) {
+            return Map.of("success", false, "message", "El administrador no se proporciono, es null");
+        }
+        if (targetUserId == null) {
+            return Map.of("success", false, "message", "El usuario a promover no se proporciono, es null");
+        }
+        if (!isAdmin(requesterId)) {
+            return Map.of("success", false, "message", "No tienes permisos de administrador");
+        }
+        User targetUser = userRepository.findById(targetUserId).orElse(null);
+        if (targetUser == null) {
+            return Map.of("success", false, "message", "El usuario a promover no se encontro");
+        }
+        if (isAdmin(targetUserId)) {
+            return Map.of("success", false, "message", "El usuario ya es administrador");
+        }
+        targetUser.setRole(com.agroSoSProyect.Models.Role.ADMIN);
+        userRepository.save(targetUser);
+        return Map.of("success", true, "message", "El usuario se promovio correctamente");
+    }
 
-		newUser.setPassword(hashPassword(newUser.getPassword()));
-		User savedUser = userRepository.save(newUser);
+    @PostMapping("/revoke")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Map<String, Object> revokeAdmin(@RequestBody Map<String, Long> data) {
+        if (data == null) {
+            return Map.of("success", false, "message", "Se proporciono un objeto null");
+        }
+        Long requesterId = data.get("requesterId");
+        Long targetUserId = data.get("targetUserId");
+        if (requesterId == null) {
+            return Map.of("success", false, "message", "El administrador no se proporciono, es null");
+        }
+        if (targetUserId == null) {
+            return Map.of("success", false, "message", "El usuario a revocar no se proporciono, es null");
+        }
+        if (!isAdmin(requesterId)) {
+            return Map.of("success", false, "message", "No tienes permisos de administrador");
+        }
+        User targetUser = userRepository.findById(targetUserId).orElse(null);
+        if (targetUser == null) {
+            return Map.of("success", false, "message", "El usuario a revocar no se encontro");
+        }
+        if (!isAdmin(targetUserId)) {
+            return Map.of("success", false, "message", "El usuario no es administrador");
+        }
+        targetUser.setRole(com.agroSoSProyect.Models.Role.USER);
+        userRepository.save(targetUser);
+        return Map.of("success", true, "message", "Se han revocado los permisos de administrador correctamente");
+    }
 
-		return Map.of(
-				"success", true,
-				"message", "Usuario registrado correctamente",
-				"user", savedUser,
-				"device", deviceRepository.findByUser(savedUser.getId()));
-	}
+    @PutMapping("/update/{id}")
+    public Map<String, Object> updateUser(@PathVariable Long id, @RequestBody User newUser) {
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = userRepository.findByEmail(currentUserEmail);
 
-	/*
-	 * Promociona un usuario a administradoEr
-	 */
-	@PostMapping("/promote")
-	public Map<String, Object> promoteToAdmin(@RequestBody Map<String, Long> data) {
+        if (currentUser == null) {
+             return Map.of("success", false, "message", "Usuario actual no autenticado");
+        }
 
-		if (data == null) {
-			return Map.of(
-					"success", false,
-					"message", "Se proporciono un objeto null");
-		}
+        if (!currentUser.getId().equals(id) && currentUser.getRole() != com.agroSoSProyect.Models.Role.ADMIN) {
+             return Map.of("success", false, "message", "No tienes permiso para actualizar este usuario");
+        }
 
-		Long requesterId = data.get("requesterId");
-		Long targetUserId = data.get("targetUserId");
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            return Map.of("success", false, "message", "Usuario no encontrado");
+        }
 
-		if (requesterId == null) {
-			return Map.of(
-					"success", false,
-					"message", "El administrador no se proporciono, es null");
-		}
+        if (newUser.getName() != null)
+            user.setName(newUser.getName());
+        if (newUser.getEmail() != null)
+            user.setEmail(newUser.getEmail());
 
-		if (targetUserId == null) {
-			return Map.of(
-					"success", false,
-					"message", "El usuario a promover no se proporciono, es null");
-		}
+        if (newUser.getPassword() != null && !newUser.getPassword().isEmpty()) {
+            user.setPassword(hashPassword(newUser.getPassword()));
+        }
 
-		if (!isAdmin(requesterId)) {
-			return Map.of(
-					"success", false,
-					"message", "No tienes permisos de administrador");
-		}
+        User savedUser = userRepository.save(user);
 
-		User targetUser = userRepository.findById(targetUserId).orElse(null);
+        return Map.of(
+                "success", true,
+                "message", "Usuario actualizado correctamente",
+                "user", savedUser,
+                "device", deviceRepository.findByUser(savedUser.getId()));
+    }
 
-		if (targetUser == null) {
-			return Map.of(
-					"success", false,
-					"message", "El usuario a promover no se encontro");
-		}
+    private boolean isAdmin(Long userId) {
+        if (userId == null) {
+            return false;
+        }
+        User user = userRepository.findById(userId).orElse(null);
+        return user != null && user.getRole() == com.agroSoSProyect.Models.Role.ADMIN;
+    }
 
-		if (isAdmin(targetUserId)) {
-			return Map.of(
-					"success", false,
-					"message", "El usuario ya es administrador");
-		}
-
-		targetUser.setRole(com.agroSoSProyect.Models.Role.ADMIN);
-		userRepository.save(targetUser);
-
-		return Map.of(
-				"success", true,
-				"message", "El usuario se promovio correctamente");
-	}
-
-	/*
-	 * Revoca los permisos de administrador a un usuario
-	 */
-	@PostMapping("/revoke")
-	public Map<String, Object> revokeAdmin(@RequestBody Map<String, Long> data) {
-
-		if (data == null) {
-			return Map.of(
-					"success", false,
-					"message", "Se proporciono un objeto null");
-		}
-
-		Long requesterId = data.get("requesterId");
-		Long targetUserId = data.get("targetUserId");
-
-		if (requesterId == null) {
-			return Map.of(
-					"success", false,
-					"message", "El administrador no se proporciono, es null");
-		}
-
-		if (targetUserId == null) {
-			return Map.of(
-					"success", false,
-					"message", "El usuario a revocar no se proporciono, es null");
-		}
-
-		if (!isAdmin(requesterId)) {
-			return Map.of(
-					"success", false,
-					"message", "No tienes permisos de administrador");
-		}
-
-		User targetUser = userRepository.findById(targetUserId).orElse(null);
-
-		if (targetUser == null) {
-			return Map.of(
-					"success", false,
-					"message", "El usuario a revocar no se encontro");
-		}
-
-		if (!isAdmin(targetUserId)) {
-			return Map.of(
-					"success", false,
-					"message", "El usuario no es administrador");
-		}
-
-		targetUser.setRole(com.agroSoSProyect.Models.Role.USER);
-		userRepository.save(targetUser);
-
-		return Map.of(
-				"success", true,
-				"message", "Se han revocado los permisos de administrador correctamente");
-	}
-
-	@PutMapping("/update/{id}")
-	public Map<String, Object> updateUser(@PathVariable Long id, @RequestBody User newUser) {
-		User user = userRepository.findById(id).orElse(null);
-
-		if (user == null) {
-			return Map.of(
-					"success", false,
-					"message", "Usuario no encontrado");
-		}
-
-		if (newUser.getName() != null)
-			user.setName(newUser.getName());
-		if (newUser.getEmail() != null)
-			user.setEmail(newUser.getEmail());
-
-		if (newUser.getPassword() != null && !newUser.getPassword().isEmpty()) {
-			user.setPassword(hashPassword(newUser.getPassword()));
-		}
-
-		User savedUser = userRepository.save(user);
-
-		return Map.of(
-				"success", true,
-				"message", "Usuario actualizado correctamente",
-				"user", savedUser,
-				"device", deviceRepository.findByUser(savedUser.getId()));
-	}
-
-	// Método para verificar si un usuario es administrador a través del id
-	private boolean isAdmin(Long userId) {
-		if (userId == null) {
-			return false;
-		}
-		User user = userRepository.findById(userId).orElse(null);
-		return user != null && user.getRole() == com.agroSoSProyect.Models.Role.ADMIN;
-	}
-
-	// Método para hashear las contraseñas recibidas por el frontend
-	private String hashPassword(String password) {
-		return passwordEncoder.encode(password);
-	}
+    private String hashPassword(String password) {
+        return passwordEncoder.encode(password);
+    }
 }
