@@ -28,6 +28,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        System.out.println("Entro en doFilterInternal");
         String token = null;
         if (request.getCookies() != null) {
             token = Arrays.stream(request.getCookies())
@@ -38,6 +39,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         if (token != null) {
+            System.out.println(" Token encontrado: " + token);
             try {
                 String email = jwtService.extractEmail(token);
                 if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
